@@ -20,6 +20,8 @@ public abstract class Writer {
         }
     }
 
+    public abstract String getName();
+
     public abstract void writeFile(String filepath,ArrayList<DataRecord> toWriteResultSet);
     public abstract Writer getInstance();
 

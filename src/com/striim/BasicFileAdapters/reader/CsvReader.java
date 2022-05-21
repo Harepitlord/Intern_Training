@@ -18,12 +18,10 @@ public class CsvReader extends Reader {
         delimiter = ',';
     }
 
-    // This function is used to create new instance of this class for each CSV-based readers
     public Reader getInstance() {
         return new CsvReader();
     }
 
-    // This function gets the file path from the user and sets it to the data member
     private void getFilePath() {
         System.out.println("Enter the File path for the csv file: ");
         String temp = scanner.nextLine();
@@ -31,7 +29,6 @@ public class CsvReader extends Reader {
             this.filePath = temp;
     }
 
-    // This function handles if the reader process encounters any expected exceptions
     private ArrayList<DataRecord> errorHandling() {
         switch (state) {
             case "File Not Found": {
@@ -68,7 +65,6 @@ public class CsvReader extends Reader {
         }
     }
 
-    // This function initiates the data members with values from the user
     @Override
     public void initiate(Scanner sc) {
         scanner = sc;
@@ -79,7 +75,6 @@ public class CsvReader extends Reader {
         }
     }
 
-    // This function creates the CSV parser and gets the header from the file ( assuming headers are present as first record)
     protected boolean prepareHeaders() {
         try {
             CSVParser parser = new CSVParserBuilder().withSeparator(delimiter).build();
@@ -106,8 +101,6 @@ public class CsvReader extends Reader {
         }
     }
 
-    // This function reads the file and calls the parser to parse the data and wraps the record into DataObject and
-    // returns a collection of DataObjects to converter interface
     public ArrayList<DataRecord> readFile() {
         try {
             if(fileReader == null) {
@@ -145,7 +138,6 @@ public class CsvReader extends Reader {
         }
     }
 
-    // This function closes the file connections of the reader
     public void cleanUp() {
         try {
             this.fileReader.close();

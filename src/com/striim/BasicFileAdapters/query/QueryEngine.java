@@ -5,10 +5,10 @@ import java.util.*;
 
 public class QueryEngine {
     Scanner sc;
-    InMemoryDatabase dataBaseObj;
+    InMemoryDatabase database;
 
     public QueryEngine(Scanner sc, InMemoryDatabase databaseObj) {
-        this.dataBaseObj = databaseObj;
+        this.database = databaseObj;
         this.sc = sc;
     }
 
@@ -17,7 +17,7 @@ public class QueryEngine {
         System.out.println("Enter the number of queries you want to enter");
         int n=sc.nextInt();
         for(int i=0;i<n;i++){
-            Query query=new Query(sc,dataBaseObj);
+            Query query=new Query(sc, database);
             query.addFilters();
             ArrayList<DataRecord> result=query.getSatisfiedRecords();
             ArrayList<DataRecord> finalResult=query.fetchColumns(result);

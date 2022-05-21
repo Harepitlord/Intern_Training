@@ -10,32 +10,28 @@ public class Application {
     private final Scanner sc;
 
     // This object is to handle the entire process
-    private final Converter fileFormatConvertor;
+    private final Converter converter;
 
     public Application() {
         sc = new Scanner(System.in);
-        fileFormatConvertor = new Converter(sc);
+        converter = new Converter(sc);
     }
 
     // This function acts as the central one where others are called
     public void runner() {
 
-        System.out.println("Enter the number of File inputs : ");
-        int n = Integer.parseInt(sc.nextLine());
-        fileFormatConvertor.addReaders(n);
+        System.out.println("Enter the ");
 
-        System.out.println("Enter the number of File Outputs: ");
-        n = Integer.parseInt(sc.nextLine());
-        fileFormatConvertor.addWriters(n);
+        converter.addReaders(1);
 
-        fileFormatConvertor.convert();
+        converter.convert();
 
         this.cleanUp();
     }
 
     // This function closes the opened files
     private void cleanUp() {
-        this.fileFormatConvertor.cleanUp();
+        this.converter.cleanUp();
         this.sc.close();
     }
 

@@ -1,6 +1,8 @@
 package com.striim.BasicFileAdapters.query;
 
 import java.util.*;
+import java.util.function.Predicate;
+
 import com.striim.BasicFileAdapters.database.*;
 import com.striim.BasicFileAdapters.filters.*;
 
@@ -8,12 +10,13 @@ public class Query {
 
     private final Scanner sc;
     private final ArrayList<Filter> filterArray;
-    private final InMemoryDatabase dataBaseObj;
+    private Predicate<DataRecord> query;
+    private final InMemoryDatabase dataRecords;
     private final ArrayList<DataRecord> resultSet;
 
-    Query(Scanner sc, InMemoryDatabase dataBaseObj)
+    Query(Scanner sc, InMemoryDatabase dataRecords)
     {
-        this.dataBaseObj=dataBaseObj;
+        this.dataRecords = dataRecords;
         this.sc=sc;
         resultSet=new ArrayList<>();
         filterArray=new ArrayList<>();
@@ -22,14 +25,21 @@ public class Query {
     public void addFilters(){
         System.out.println("Enter the number of filters you want to add");
         int numOfFilters=sc.nextInt();
+        String operation = "";
         sc.nextLine();
         for(int i=0;i<numOfFilters;i++)
         {
             System.out.println("Enter the Column Name on which the Constraint has to be applied");
             String columnName=sc.nextLine();
             System.out.println("Enter the Compare with value to which the values has to be compared");
-            String compareWithValue=sc.nextLine();
-            filterArray.add(createFilter(columnName,compareWithValue));
+            String referencValue=sc.nextLine();
+            if(query == null)
+                query = FilterFactory.getFilter(columnName,operation,referencValue);
+            else {
+                Predicate<DataRecord> temp = FilterFactory.getFilter(columnName,operation,referencValue);
+                if(temp != null)
+                    query = query.and(temp);
+            }
         }
     }
 
@@ -44,11 +54,9 @@ public class Query {
     }
 
     public ArrayList<DataRecord> getSatisfiedRecords(){
-        for(int i = 0; i< dataBaseObj.getDataObjArray().size(); i++){
-            boolean recordSatisfies=isAllConditionsSatisfied(dataBaseObj.getDataObjArray().get(i));
-            if(recordSatisfies){
-                resultSet.add(dataBaseObj.getDataObjArray().get(i));
-            }
+        for(DataRecord dataRecord : dataRecords.getDataObjArray()) {
+            if(isAllConditionsSatisfied(dataRecord))
+                resultSet.add(dataRecord);
         }
         return resultSet;
     }
@@ -69,7 +77,7 @@ public class Query {
             return resultSet;
         }
         else{
-            //need to add only the required columns to a arraylist of dataobjects which gives only the specific columns
+
             ArrayList<DataRecord> toWriteResultSet=new ArrayList<>();
             for (DataRecord dataRecord : resultSet) {
                 DataRecord recordObj = new DataRecord();
@@ -82,14 +90,21 @@ public class Query {
         }
     }
 
-    private boolean isAllConditionsSatisfied(DataRecord dataObj){
-        int i=0;
-        boolean allSatisfied;
-        do{
-            allSatisfied=filterArray.get(i).doesSatisfies(dataObj);
-            i++;
-        }while(allSatisfied && i<filterArray.size());
-        return allSatisfied;
+    private boolean isAllConditionsSatisfied(DataRecord dataRecord){
+
+        for(Filter filter : filterArray) {
+            if(!filter.doesSatisfies(dataRecord))
+                return false;
+        }
+        return true;
     }
+
+//    int i=0;
+//    boolean allSatisfied;
+//        do{
+//        allSatisfied=filterArray.get(i).doesSatisfies(dataObj);
+//        i++;
+//    }while(allSatisfied && i<filterArray.size());
+//        return allSatisfied;
 
 }

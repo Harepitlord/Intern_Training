@@ -35,4 +35,8 @@ public class JsonWriter extends Writer {
         return arrayObj;
     }
 
+    @Override
+    public String getName() {
+        return "JSON WRITER";
+    }
 }
