@@ -28,6 +28,8 @@ public class Application {
 
         executorService.shutdown();
 
+        System.out.println("Executor has been shutdown");
+
     }
 
     protected void finalize() {
