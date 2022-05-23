@@ -1,28 +1,47 @@
 package com.striim.BasicFileAdapters.query;
 
 import com.striim.BasicFileAdapters.database.*;
+
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class QueryEngine {
-    Scanner sc;
-    InMemoryDatabase database;
+    private final Scanner sc;
+    private final InMemoryDatabase database;
+
+    private Predicate<DataRecord> query;
 
     public QueryEngine(Scanner sc, InMemoryDatabase databaseObj) {
         this.database = databaseObj;
         this.sc = sc;
     }
 
-    public ArrayList<ArrayList<DataRecord>> generateQueries(){
-        ArrayList<ArrayList<DataRecord>> queriesResultSet=new ArrayList<>();
-        System.out.println("Enter the number of queries you want to enter");
-        int n=sc.nextInt();
-        for(int i=0;i<n;i++){
-            Query query=new Query(sc, database);
-            query.addFilters();
-            ArrayList<DataRecord> result=query.getSatisfiedRecords();
-            ArrayList<DataRecord> finalResult=query.fetchColumns(result);
-            queriesResultSet.add(finalResult);
-        }
-        return queriesResultSet;
+    public void generateQueries(){
+
+        System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
+        System.out.println("eg : col > val,col < val;");
+        boolean another = true;
+        do {
+            String input = sc.nextLine();
+            if(input.endsWith(";")) {
+                another = false;
+                input = input.substring(0,input.length()-1);
+            }
+            String[] constraints = input.split(",");
+            for(String constraint : constraints) {
+                if(query == null)
+                    query = FilterFactory.getFilter(constraint);
+                else {
+                    Predicate<DataRecord> temp = FilterFactory.getFilter(constraint);
+                    if(temp != null)
+                        query = query.and(temp);
+                }
+            }
+        }while(another);
+    }
+
+    public ArrayList<DataRecord> queryData() {
+        return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query).collect(Collectors.toList());
     }
 }

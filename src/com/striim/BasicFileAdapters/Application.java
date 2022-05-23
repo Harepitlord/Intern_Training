@@ -6,10 +6,8 @@ import java.util.Scanner;
 
 public class Application {
 
-    // The scanner object to get user inputs
     private final Scanner sc;
 
-    // This object is to handle the entire process
     private final Converter converter;
 
     public Application() {
@@ -17,21 +15,17 @@ public class Application {
         converter = new Converter(sc);
     }
 
-    // This function acts as the central one where others are called
     public void runner() {
 
-        System.out.println("Enter the ");
+        converter.addReaders();
 
-        converter.addReaders(1);
+        converter.readFiles();
 
-        converter.convert();
+        converter.writers();
 
-        this.cleanUp();
     }
 
-    // This function closes the opened files
-    private void cleanUp() {
-        this.converter.cleanUp();
+    protected void finalize() {
         this.sc.close();
     }
 

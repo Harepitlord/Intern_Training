@@ -41,9 +41,9 @@ abstract public class Reader {
     }
 
     abstract protected boolean prepareHeaders();
-    abstract public Reader getInstance();
+    abstract public Reader getInstance(String filePath);
     abstract public ArrayList<DataRecord> readFile();
     abstract public void initiate(Scanner scanner);
-    public abstract void cleanUp();
+    protected abstract void finalize();
 
 }

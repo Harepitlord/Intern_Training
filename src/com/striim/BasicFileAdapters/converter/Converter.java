@@ -26,43 +26,65 @@ public class Converter {
         }
     }
 
-    public void addWriter(Writer writer) {
+    public boolean addWriter(Writer writer) {
         if(!writers.contains(writer)) {
             writers.add(writer);
+            return true;
         }
+        return false;
     }
 
-    public void addReaders(int n) {
-        for(int i = 0;i<n;i++) {
-            Reader reader = ReadersWritersFactory.readerMenu(sc);
+    public void addReaders() {
+        ReadersWritersFactory.readerMenu();
+        boolean another = true;
+        do {
+            System.out.println("Enter the reader type and file path separated by a comma: (End with ; to end the input)");
+            String input = sc.nextLine();
+            if(input.length() == 0 || input.equals(";"))
+                return;
+            if(input.endsWith(";")) {
+                another = false;
+                input = input.substring(0, input.length() - 1);
+            }
+            Reader reader = ReadersWritersFactory.getReader(input.split(","));
+            if(reader == null) {
+                another = true;
+                System.out.println("Enter proper reader type and file path");
+                continue;
+            }
             reader.initiate(this.sc);
             this.addReader(reader);
-        }
+        }while(another);
     }
 
-    public void addWriters(int n) {
-        for(int i = 0;i<n;i++) {
-            Writer writer = ReadersWritersFactory.writerMenu(sc);
-            this.addWriter(writer);
-        }
+    public void writers() {
+        ReadersWritersFactory.writerMenu();
+        boolean another = true;
+        do {
+            System.out.println("Enter the writer type, folder path and file name separated by a comma : (End with ; to end the input)");
+            String input = sc.nextLine();
+            if(input.length() == 0 || input.equals(";"))
+                return;
+            if (input.endsWith(";")) {
+                another = false;
+                input = input.substring(0, input.length() - 1);
+            }
+            Writer writer = ReadersWritersFactory.getWriter(input.split(","));
+            if(writer == null) {
+                another = true;
+                System.out.println("Enter proper writer type and file path");
+                continue;
+            }
+            if(this.addWriter(writer)) {
+                writer.writeFile(sc,database);
+            }
+        }while (another);
     }
 
-    private void writerOperation(Writer writer) {
-        System.out.println("Enter the file path for the "+writer.getName());
-        String filepath=sc.nextLine();
-        QueryEngine queryEngine=new QueryEngine(sc,database);
-        ArrayList<ArrayList<DataRecord>> queriesResultSet=queryEngine.generateQueries();
-        queriesResultSet.forEach(eachQueryResult->writer.writeFile(filepath,eachQueryResult));
-    }
 
-    public void convert() {
 
+    public void readFiles() {
         readers.forEach(e-> database.addDataObjects(e.readFile()));
-
-        writers.forEach(this::writerOperation);
     }
 
-    public void cleanUp() {
-        readers.forEach(Reader::cleanUp);
-    }
 }

@@ -6,23 +6,25 @@ import java.util.*;
 
 public abstract class Writer {
 
-    File file;
-    FileWriter fileWriter;
+    protected FileWriter fileWriter;
+    protected String state;
 
-    void prepareWriter(String filepath){
-        file=new File(filepath);
+    protected boolean prepareWriter(String filepath){
         try {
-            if(file.createNewFile())
-                fileWriter=new FileWriter(file,true);
+            File file = new File(filepath);
+            file.createNewFile();
+            fileWriter=new FileWriter(file,true);
+            state = "File Connected";
+            return true;
         }
         catch(IOException ex){
-            ex.printStackTrace();
+            state="File Error";
+            return false;
         }
     }
 
     public abstract String getName();
-
-    public abstract void writeFile(String filepath,ArrayList<DataRecord> toWriteResultSet);
-    public abstract Writer getInstance();
+    public abstract void writeFile(Scanner scanner,InMemoryDatabase database);
+    public abstract Writer getInstance(String filePath);
 
 }

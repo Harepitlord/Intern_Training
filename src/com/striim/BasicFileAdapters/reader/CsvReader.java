@@ -13,56 +13,59 @@ public class CsvReader extends Reader {
     private CSVReader reader;
     private char delimiter;
 
-    public CsvReader() {
-        super();
+    public CsvReader(String filePath) {
+        this.filePath = filePath;
         delimiter = ',';
     }
 
-    public Reader getInstance() {
-        return new CsvReader();
+    public Reader getInstance(String filePath) {
+        return new CsvReader(filePath);
     }
 
     private void getFilePath() {
-        System.out.println("Enter the File path for the csv file: ");
+        System.out.println("Enter proper File path for the csv file: ");
         String temp = scanner.nextLine();
         if(temp.length()>0)
             this.filePath = temp;
+        else
+            getFilePath();
     }
 
     private ArrayList<DataRecord> errorHandling() {
         switch (state) {
-            case "File Not Found": {
+            case "File Not Found":
                 System.out.println("There is no such file in the given path, Re-enter new File Path");
-                return readFile();
-            }
-            case "Data Not Found": {
+                break;
+
+            case "Data Not Found":
                 System.out.println("The given csv file doesn't contain a record");
                 this.fileReader = null;
-                return readFile();
-            }
-            case "Only Headers": {
+                break;
+
+            case "Only Headers":
                 System.out.println("The given csv file contains only Headers");
                 this.fileReader = null;
                 this.headers = null;
-                return readFile();
-            }
-            case "Read Error": {
+                break;
+
+            case "Read Error":
                 System.out.println("The given file not readable, provide filepath for the new file");
                 this.fileReader = null;
-                return readFile();
-            }
-            case "CSV Error": {
+                break;
+
+            case "CSV Error":
                 System.out.println("The given is in improper format, provide filepath for new file");
                 this.fileReader = null;
-                return readFile();
-            }
+                break;
+
             default: {
                 state = "Improper state";
                 System.out.println("State failure");
                 return null;
             }
-
         }
+        getFilePath();
+        return readFile();
     }
 
     @Override
@@ -103,11 +106,8 @@ public class CsvReader extends Reader {
 
     public ArrayList<DataRecord> readFile() {
         try {
-            if(fileReader == null) {
-                getFilePath();
-                if (!this.prepareReader(filePath))
-                    return errorHandling();
-            }
+            if (!this.prepareReader(filePath))
+                return errorHandling();
 
             if(headers == null)
                 if (!this.prepareHeaders())
@@ -138,7 +138,7 @@ public class CsvReader extends Reader {
         }
     }
 
-    public void cleanUp() {
+    protected void finalize() {
         try {
             this.fileReader.close();
             this.reader.close();

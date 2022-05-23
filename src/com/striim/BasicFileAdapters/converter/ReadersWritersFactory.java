@@ -13,32 +13,36 @@ public class ReadersWritersFactory {
 
     static {
 
-        readers.put("CSV READER",new CsvReader());
+        readers.put("CSV READER",new CsvReader(null));
 
         writers.put("JSON WRITER", new JsonWriter());
     }
 
-    public static Reader readerMenu(Scanner scanner) {
+    public static void readerMenu() {
         System.out.println("Available Readers are: (Enter the reader name)");
-        for (String s : ReadersWritersFactory.readers.keySet()) {
+        for (String s : readers.keySet()) {
             System.out.println("-> "+s);
         }
-        String choice = scanner.nextLine().toUpperCase();
-        if(ReadersWritersFactory.readers.containsKey(choice))
-            return ReadersWritersFactory.readers.get(choice).getInstance();
-        System.out.println("Enter proper option: ");
-        return readerMenu(scanner);
     }
 
-    public static Writer writerMenu(Scanner scanner) {
+    public static Reader getReader(String[] input) {
+        String choice = input[0].toUpperCase(),filePath = input[1];
+        if(readers.containsKey(choice))
+            return readers.get(choice).getInstance(filePath);
+        return null;
+    }
+
+    public static void writerMenu() {
         System.out.println("Available Writers are: (Enter the writer name)");
-        for(String s : ReadersWritersFactory.writers.keySet()) {
+        for(String s : writers.keySet()) {
             System.out.println("-> "+s);
         }
-        String choice = scanner.nextLine().toUpperCase();
-        if(ReadersWritersFactory.writers.containsKey(choice))
-            return ReadersWritersFactory.writers.get(choice).getInstance();
-        System.out.println("Enter proper option: ");
-        return writerMenu(scanner);
+    }
+
+    public static Writer getWriter(String[] input) {
+        String choice = input[0].toUpperCase(),filePath = input[1],fileName = input[2];
+        if (writers.containsKey(choice))
+            return writers.get(choice).getInstance(filePath+"/"+fileName);
+        return null;
     }
 }
