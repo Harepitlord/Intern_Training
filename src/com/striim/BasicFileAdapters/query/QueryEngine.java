@@ -24,6 +24,8 @@ public class QueryEngine {
         boolean another = true;
         do {
             String input = sc.nextLine();
+            if(input.length()==0 || input.equals(";"))
+                return;
             if(input.endsWith(";")) {
                 another = false;
                 input = input.substring(0,input.length()-1);
@@ -42,6 +44,8 @@ public class QueryEngine {
     }
 
     public ArrayList<DataRecord> queryData() {
+        if(query==null)
+            return database.getDataObjArray();
         return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query).collect(Collectors.toList());
     }
 }

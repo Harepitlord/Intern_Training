@@ -28,16 +28,13 @@ public class JsonWriter extends Writer {
         ArrayList<DataRecord> toWriteResultSet = queryEngine.queryData();
 
         JSONArray jsonArray=toJson(toWriteResultSet);
-        for(int i=0;i<jsonArray.length();i++){
-            try {
-                JSONObject jsonObj = jsonArray.getJSONObject(i);
-                fileWriter.write(jsonObj.toString());
-                fileWriter.flush();
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
+        JSONObject jsonObj=new JSONObject();
+        jsonObj.put("JSON Data",jsonArray);
+        try {
+            fileWriter.write(jsonObj.toString());
+            fileWriter.flush();
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
     }
 

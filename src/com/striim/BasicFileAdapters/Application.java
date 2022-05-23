@@ -15,7 +15,7 @@ public class Application {
         converter = new Converter(sc);
     }
 
-    public void runner() {
+    public void runApp() {
 
         converter.addReaders();
 
@@ -31,7 +31,7 @@ public class Application {
 
     public static void main(String[] args) {
         Application r = new Application();
-        r.runner();
+        r.runApp();
     }
 }
 
