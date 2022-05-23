@@ -4,6 +4,7 @@ import com.striim.BasicFileAdapters.database.*;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import org.json.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 public class JsonWriter extends Writer {
 
@@ -21,21 +22,25 @@ public class JsonWriter extends Writer {
 
 
 
-    public void writeFile(Scanner sc, InMemoryDatabase database){
+    public void writeFile(Scanner sc, InMemoryDatabase database, ExecutorService executorService){
         QueryEngine queryEngine=new QueryEngine(sc,database);
         queryEngine.generateQueries();
 
-        ArrayList<DataRecord> toWriteResultSet = queryEngine.queryData();
+        executorService.submit(() -> {
+            ArrayList<DataRecord> toWriteResultSet = queryEngine.queryData();
 
-        JSONArray jsonArray=toJson(toWriteResultSet);
-        JSONObject jsonObj=new JSONObject();
-        jsonObj.put("JSON Data",jsonArray);
-        try {
-            fileWriter.write(jsonObj.toString());
-            fileWriter.flush();
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
+            JSONArray jsonArray=toJson(toWriteResultSet);
+            JSONObject jsonObj=new JSONObject();
+            jsonObj.put("JSON Data",jsonArray);
+            try {
+                fileWriter.write(jsonObj.toString());
+                fileWriter.flush();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+        });
+
+
     }
 
     JSONArray toJson(ArrayList<DataRecord> toWriteResultSet){
