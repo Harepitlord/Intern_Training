@@ -31,8 +31,8 @@ public class JsonWriter extends Writer {
 
             JSONArray jsonArray=toJson(toWriteResultSet);
             JSONObject jsonObj=new JSONObject();
-            jsonObj.put("JSON Data",jsonArray);
             try {
+                jsonObj.put("JSON Data",jsonArray);
                 fileWriter.write(jsonObj.toString());
                 fileWriter.flush();
                 state = "Completed";
