@@ -6,6 +6,8 @@ import com.striim.BasicFileAdapters.writer.*;
 import com.striim.BasicFileAdapters.database.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class Converter {
 
@@ -88,11 +90,16 @@ public class Converter {
         }while (another);
     }
 
-
-
     public void readFiles(ExecutorService executorService) {
         readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
-//        readers.forEach(e-> database.addDataObjects(e.readFile()));
+        List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
+        boolean loop = true;
+        System.out.print("Files are read .");
+        while(loop) {
+            System.out.print(".");
+            loop = !futures.stream().allMatch(Future::isDone);
+        }
+        System.out.println("File reading completed");
     }
 
 }
