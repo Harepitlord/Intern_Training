@@ -3,6 +3,7 @@ package com.striim.BasicFileAdapters.writer;
 import com.striim.BasicFileAdapters.database.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 public abstract class Writer {
 
@@ -12,7 +13,7 @@ public abstract class Writer {
     protected boolean prepareWriter(String filepath){
         try {
             File file = new File(filepath);
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
             fileWriter=new FileWriter(file,true);
             state = "File Connected";
             return true;
@@ -24,7 +25,7 @@ public abstract class Writer {
     }
 
     public abstract String getName();
-    public abstract void writeFile(Scanner scanner,InMemoryDatabase database);
+    public abstract void writeFile(Scanner scanner, InMemoryDatabase database, ExecutorService executorService);
     public abstract Writer getInstance(String filePath);
 
 }

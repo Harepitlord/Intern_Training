@@ -5,6 +5,9 @@ import com.striim.BasicFileAdapters.reader.*;
 import com.striim.BasicFileAdapters.writer.*;
 import com.striim.BasicFileAdapters.database.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class Converter {
 
@@ -41,7 +44,10 @@ public class Converter {
             System.out.println("Enter the reader type and file path separated by a comma: (End with ; to end the input)");
             String input = sc.nextLine();
             if(input.length() == 0 || input.equals(";"))
-                return;
+                if(readers.size()>0)
+                    return;
+                else
+                    continue;
             if(input.endsWith(";")) {
                 another = false;
                 input = input.substring(0, input.length() - 1);
@@ -57,14 +63,17 @@ public class Converter {
         }while(another);
     }
 
-    public void writers() {
+    public void writers(ExecutorService executorService) {
         ReadersWritersFactory.writerMenu();
         boolean another = true;
         do {
             System.out.println("Enter the writer type, folder path and file name separated by a comma : (End with ; to end the input)");
             String input = sc.nextLine();
             if(input.length() == 0 || input.equals(";"))
-                return;
+                if(writers.size()>0)
+                    return;
+                else
+                    continue;
             if (input.endsWith(";")) {
                 another = false;
                 input = input.substring(0, input.length() - 1);
@@ -76,15 +85,21 @@ public class Converter {
                 continue;
             }
             if(this.addWriter(writer)) {
-                writer.writeFile(sc,database);
+                writer.writeFile(sc,database,executorService);
             }
         }while (another);
     }
 
-
-
-    public void readFiles() {
-        readers.forEach(e-> database.addDataObjects(e.readFile()));
+    public void readFiles(ExecutorService executorService) {
+//        readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
+        List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
+        boolean loop = true;
+        long start = System.nanoTime();
+        System.out.print("Files are being read .");
+        while(loop) {
+            loop = !futures.stream().allMatch(Future::isDone);
+        }
+        System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
     }
 
 }
