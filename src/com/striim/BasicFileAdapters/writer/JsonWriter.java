@@ -35,6 +35,7 @@ public class JsonWriter extends Writer {
             try {
                 fileWriter.write(jsonObj.toString());
                 fileWriter.flush();
+                state = "Completed";
             }catch(Exception ex){
                 ex.printStackTrace();
             }

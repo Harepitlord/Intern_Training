@@ -91,15 +91,15 @@ public class Converter {
     }
 
     public void readFiles(ExecutorService executorService) {
-        readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
+//        readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
-        System.out.print("Files are read .");
+        long start = System.nanoTime();
+        System.out.print("Files are being read .");
         while(loop) {
-            System.out.print(".");
             loop = !futures.stream().allMatch(Future::isDone);
         }
-        System.out.println("File reading completed");
+        System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
     }
 
 }

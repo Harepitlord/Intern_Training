@@ -46,6 +46,35 @@ public class QueryEngine {
     public ArrayList<DataRecord> queryData() {
         if(query==null)
             return database.getDataObjArray();
-        return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query).collect(Collectors.toList());
+        return fetchColumns((ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query).collect(Collectors.toList()));
+    }
+
+    public ArrayList<DataRecord> fetchColumns(ArrayList<DataRecord> resultSet){
+        Map<String,String> record=resultSet.get(0).getRecord();
+        Set<String> keySet=record.keySet();
+        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end");
+        System.out.println("All "+keySet);
+        ArrayList<String> fetchColumnsSet = new ArrayList<>();
+        String colName="Start";
+        while(!colName.equals("End")){
+            colName=sc.nextLine();
+            fetchColumnsSet.add(colName);
+        }
+        fetchColumnsSet.remove(fetchColumnsSet.size()-1);
+        if(fetchColumnsSet.get(0).equals("All")){
+            return resultSet;
+        }
+        else{
+            //need to add only the required columns to a arraylist of dataobjects which gives only the specific columns
+            ArrayList<DataRecord> toWriteResultSet=new ArrayList<>();
+            for (DataRecord dataRecord : resultSet) {
+                DataRecord recordObj = new DataRecord();
+                for (String s : fetchColumnsSet) {
+                    recordObj.getRecord().put(s, dataRecord.getRecord().get(s));
+                }
+                toWriteResultSet.add(recordObj);
+            }
+            return toWriteResultSet;
+        }
     }
 }
