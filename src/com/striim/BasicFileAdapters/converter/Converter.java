@@ -1,10 +1,13 @@
 package com.striim.BasicFileAdapters.converter;
 
-import com.striim.BasicFileAdapters.query.QueryEngine;
-import com.striim.BasicFileAdapters.reader.*;
-import com.striim.BasicFileAdapters.writer.*;
-import com.striim.BasicFileAdapters.database.*;
-import java.util.*;
+import com.striim.BasicFileAdapters.database.Database;
+import com.striim.BasicFileAdapters.database.InMemoryDatabase;
+import com.striim.BasicFileAdapters.reader.Reader;
+import com.striim.BasicFileAdapters.writer.Writer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -13,12 +16,12 @@ public class Converter {
 
     private final ArrayList<Reader> readers;
     private final ArrayList<Writer> writers;
-    private final InMemoryDatabase database;
+    private final Database database;
     private final Scanner sc;
 
-    public Converter(Scanner scanner) {
+    public Converter(Scanner scanner,Database database) {
         this.sc = scanner;
-        this.database = new InMemoryDatabase();
+        this.database = database;
         this.readers = new ArrayList<>();
         this.writers = new ArrayList<>();
     }
@@ -58,7 +61,7 @@ public class Converter {
                 System.out.println("Enter proper reader type and file path");
                 continue;
             }
-            reader.initiate(this.sc);
+            reader.initiate(this.sc,database.getType());
             this.addReader(reader);
         }while(another);
     }
@@ -91,7 +94,6 @@ public class Converter {
     }
 
     public void readFiles(ExecutorService executorService) {
-//        readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();

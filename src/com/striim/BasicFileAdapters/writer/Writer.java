@@ -25,7 +25,7 @@ public abstract class Writer {
     }
 
     public abstract String getName();
-    public abstract void writeFile(Scanner scanner, InMemoryDatabase database, ExecutorService executorService);
+    public abstract void writeFile(Scanner scanner, Database database, ExecutorService executorService);
     public abstract Writer getInstance(String filePath);
 
 }

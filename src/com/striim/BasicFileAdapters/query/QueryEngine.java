@@ -1,6 +1,7 @@
 package com.striim.BasicFileAdapters.query;
 
 import com.striim.BasicFileAdapters.database.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -8,14 +9,27 @@ import java.util.stream.Collectors;
 
 public class QueryEngine {
     private final Scanner sc;
-    private final InMemoryDatabase database;
+    private final Database database;
     private ArrayList<String> fetchColumnsSet;
-
     private Predicate<DataRecord> query;
+    private ArrayList<DataRecord> dataRecords;
 
-    public QueryEngine(Scanner sc, InMemoryDatabase databaseObj) {
+    public QueryEngine(Scanner sc, Database databaseObj) {
         this.database = databaseObj;
         this.sc = sc;
+    }
+
+    private void gatherData() {
+        if(StringUtils.equals(database.getType(),"Kafka")) {
+            String topicId = null;
+            while (topicId == null || topicId.length() == 0) {
+                System.out.println("Enter the topic Id: ");
+                topicId = sc.nextLine();
+            }
+            dataRecords = database.getDataObjArray(topicId);
+        } else {
+            dataRecords = database.getDataObjArray(null);
+        }
     }
 
     public void generateQueries(){
@@ -47,8 +61,8 @@ public class QueryEngine {
 
     public ArrayList<DataRecord> queryData() {
         if(query==null)
-            return database.getDataObjArray();
-        return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query)
+            return dataRecords;
+        return (ArrayList<DataRecord>) dataRecords.stream().filter(query)
                 .map(dataRecord -> { DataRecord recordObj = new DataRecord();
                                     for (String s : fetchColumnsSet) {
                                         recordObj.getRecord().put(s, dataRecord.getRecord().get(s));
@@ -58,7 +72,7 @@ public class QueryEngine {
     }
 
     public void fetchColumns(){
-        Map<String,String> record=database.getDataObjArray().get(0).getRecord();
+        Map<String,String> record=dataRecords.get(0).getRecord();
         Set<String> keySet=record.keySet();
         System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end");
         System.out.println("All "+keySet);

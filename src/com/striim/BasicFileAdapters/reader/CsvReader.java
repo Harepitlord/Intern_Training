@@ -3,6 +3,8 @@ package com.striim.BasicFileAdapters.reader;
 import com.striim.BasicFileAdapters.database.*;
 import com.opencsv.*;
 import com.opencsv.exceptions.*;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.util.*;
 
@@ -12,6 +14,7 @@ public class CsvReader extends Reader {
 
     private CSVReader reader;
     private char delimiter;
+    private String topicId;
 
     public CsvReader(String filePath) {
         this.filePath = filePath;
@@ -69,12 +72,16 @@ public class CsvReader extends Reader {
     }
 
     @Override
-    public void initiate(Scanner sc) {
+    public void initiate(Scanner sc,String type) {
         scanner = sc;
         System.out.print("Enter the delimiter for the data in csv (Leave blank for ','): ");
         String temp = scanner.nextLine();
         if(temp.length()>1) {
             delimiter = temp.charAt(0);
+        }
+        if(StringUtils.equals(type,"Kafka")) {
+            System.out.println("Enter the Topic Id: ");
+            this.topicId = sc.nextLine();
         }
     }
 
@@ -121,7 +128,7 @@ public class CsvReader extends Reader {
 
             ArrayList<DataRecord> dataRecords = new ArrayList<>();
 
-            arr.forEach(e-> dataRecords.add(new DataRecord(headers,e)));
+            arr.forEach(e-> dataRecords.add(new DataRecord(headers,e,topicId)));
 
             state = "Success";
             this.fileReader.close();

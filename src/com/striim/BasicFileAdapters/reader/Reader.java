@@ -2,6 +2,7 @@ package com.striim.BasicFileAdapters.reader;
 
 import com.striim.BasicFileAdapters.database.DataRecord;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ abstract public class Reader {
     abstract protected boolean prepareHeaders();
     abstract public Reader getInstance(String filePath);
     abstract public ArrayList<DataRecord> readFile();
-    abstract public void initiate(Scanner scanner);
+    abstract public void initiate(Scanner scanner,String type);
     protected abstract void finalize();
 
 }
