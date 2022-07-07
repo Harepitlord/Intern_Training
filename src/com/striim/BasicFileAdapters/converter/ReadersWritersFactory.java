@@ -1,10 +1,11 @@
 package com.striim.BasicFileAdapters.converter;
 
-import com.striim.BasicFileAdapters.reader.*;
-import com.striim.BasicFileAdapters.writer.*;
+import com.striim.BasicFileAdapters.reader.CsvReader;
+import com.striim.BasicFileAdapters.reader.Reader;
+import com.striim.BasicFileAdapters.writer.JsonWriter;
+import com.striim.BasicFileAdapters.writer.Writer;
 
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class ReadersWritersFactory {
 

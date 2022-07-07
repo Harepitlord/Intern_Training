@@ -14,11 +14,9 @@ abstract public class Reader {
     protected ArrayList<String> headers;
     protected Scanner scanner;
     protected String state;
-
     public Reader() {
         state = "Initial";
     }
-
     protected boolean prepareReader(String filePath) {
         this.filePath = filePath;
         try {
@@ -31,19 +29,16 @@ abstract public class Reader {
             return false;
         }
     }
-
-    public String getState() {
-        return state;
-    }
-
-    public ArrayList<String> getHeaders() {
-        return headers;
-    }
-
     abstract protected boolean prepareHeaders();
     abstract public Reader getInstance(String filePath);
     abstract public ArrayList<DataRecord> readFile();
     abstract public void initiate(Scanner scanner);
     protected abstract void finalize();
+    public String getState() {
+        return state;
+    }
+    public ArrayList<String> getHeaders() {
+        return headers;
+    }
 
 }
