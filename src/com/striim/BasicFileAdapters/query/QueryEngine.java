@@ -46,7 +46,7 @@ public class QueryEngine {
     }
 
     public ArrayList<DataRecord> queryData() {
-        if(query==null)
+        if(query==null || fetchColumnsSet.get(0).equals("All") )
             return database.getDataObjArray();
         return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query)
                 .map(dataRecord -> { DataRecord recordObj = new DataRecord();
