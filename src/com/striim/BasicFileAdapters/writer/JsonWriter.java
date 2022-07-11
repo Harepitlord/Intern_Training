@@ -22,7 +22,9 @@ public class JsonWriter extends Writer {
 
 
 
+
     public void writeFile(Scanner sc, InMemoryDatabase database, ExecutorService executorService){
+        this.scanner = sc;
         QueryEngine queryEngine=new QueryEngine(sc,database);
         queryEngine.generateQueries();
 
