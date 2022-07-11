@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.*;
 
 abstract public class Reader {
 
@@ -15,7 +14,6 @@ abstract public class Reader {
     protected ArrayList<String> headers;
     protected Scanner scanner;
     protected String state;
-    public String fileName;
 
     public Reader() {
         state = "Initial";
@@ -24,9 +22,7 @@ abstract public class Reader {
     protected boolean prepareReader(String filePath) {
         this.filePath = filePath;
         try {
-            File file=new File(filePath);
-            fileReader = new FileReader(file);
-            fileName=file.getName();
+            fileReader = new FileReader(filePath);
             state = "File Connected";
             return true;
         } catch (FileNotFoundException e) {
