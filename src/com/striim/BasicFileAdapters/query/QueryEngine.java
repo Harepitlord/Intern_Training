@@ -34,6 +34,8 @@ public class QueryEngine {
 
     public void generateQueries(){
 
+        gatherData();
+
         System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
         System.out.println("eg : col > val,col < val;");
         boolean another = true;

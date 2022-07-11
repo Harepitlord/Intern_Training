@@ -30,6 +30,8 @@ public class KafkaDatabase implements Database {
             ConsumerRecords<String, DataRecord> records=KafkaConsumer.poll(Duration.ofMillis(600));
             ArrayList<DataRecord> dataRecords = new ArrayList<>();
             records.forEach(e->dataRecords.add(e.value()));
+            KafkaConsumer.commitAsync();
+            KafkaConsumer.close();
             return dataRecords;
     }
 

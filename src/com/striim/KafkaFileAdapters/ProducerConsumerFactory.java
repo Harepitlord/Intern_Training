@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import scala.collection.immutable.Stream;
 
@@ -41,9 +42,10 @@ public class ProducerConsumerFactory {
         producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,KafkaObjectSerializer.class.getName());
 
         consumerProperties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapServer);
-        consumerProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,StringSerializer.class.getName());
+        consumerProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,KafkaObjectDeserializer.class.getName());
         consumerProperties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
+        consumerProperties.setProperty(ConsumerConfig.GROUP_ID_CONFIG,"First_App");
     }
     public static KafkaProducer<String, DataRecord> getProducer() {
         return new KafkaProducer<>(producerProperties);

@@ -9,6 +9,7 @@ public abstract class Writer {
 
     protected FileWriter fileWriter;
     protected String state;
+    protected Scanner scanner;
 
     protected boolean prepareWriter(String filepath){
         try {
@@ -20,8 +21,17 @@ public abstract class Writer {
         }
         catch(IOException ex){
             state="File Error";
-            return false;
+            return getFilePath();
         }
+    }
+
+    private boolean getFilePath() {
+        System.out.println("Enter proper File path for the csv file: ");
+        String temp = scanner.nextLine();
+        if(temp.length()>0)
+            return prepareWriter(temp);
+        else
+            return getFilePath();
     }
 
     public abstract String getName();
