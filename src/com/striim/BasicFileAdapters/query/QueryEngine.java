@@ -46,29 +46,27 @@ public class QueryEngine {
     }
 
     public ArrayList<DataRecord> queryData() {
-        if(query==null)
+        if(query==null || fetchColumnsSet.get(0).equals("All") )
             return database.getDataObjArray();
         return (ArrayList<DataRecord>) database.getDataObjArray().stream().filter(query)
-                .map(dataRecord -> { DataRecord recordObj = new DataRecord();
-                                    for (String s : fetchColumnsSet) {
-                                        recordObj.getRecord().put(s, dataRecord.getRecord().get(s));
-                                    }
-                                    return recordObj; })
+                .map(dataRecord -> dataRecord.fetchColumn(fetchColumnsSet))
                 .collect(Collectors.toList());
     }
 
     public void fetchColumns(){
         Map<String,String> record=database.getDataObjArray().get(0).getRecord();
         Set<String> keySet=record.keySet();
-        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end");
+        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end.For all columns enter end");
         System.out.println("All "+keySet);
         fetchColumnsSet = new ArrayList<>();
         String colName="Start";
-        while(!colName.equals("End")){
-            colName=sc.nextLine();
+        while(!colName.equals("END")){
+            colName=sc.nextLine().toUpperCase();
             fetchColumnsSet.add(colName);
         }
-        fetchColumnsSet.remove(fetchColumnsSet.size()-1);
+        if(fetchColumnsSet.size()<=1)
+            fetchColumnsSet.addAll(keySet);
+        fetchColumnsSet.remove(0);
     }
 
 }

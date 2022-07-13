@@ -22,7 +22,9 @@ public class JsonWriter extends Writer {
 
 
 
+
     public void writeFile(Scanner sc, InMemoryDatabase database, ExecutorService executorService){
+        this.scanner = sc;
         QueryEngine queryEngine=new QueryEngine(sc,database);
         queryEngine.generateQueries();
 
@@ -31,8 +33,8 @@ public class JsonWriter extends Writer {
 
             JSONArray jsonArray=toJson(toWriteResultSet);
             JSONObject jsonObj=new JSONObject();
-            jsonObj.put("JSON Data",jsonArray);
             try {
+                jsonObj.put("JSON Data",jsonArray);
                 fileWriter.write(jsonObj.toString());
                 fileWriter.flush();
                 state = "Completed";
