@@ -17,7 +17,6 @@ public class Converter {
     private final ArrayList<Writer> writers;
     private final InMemoryDatabase database;
     private final Scanner sc;
-    protected String destinationFileName;
 
     public Converter(Scanner scanner) {
         this.sc = scanner;
@@ -29,7 +28,6 @@ public class Converter {
     public void addReader(Reader reader) {
         if(!readers.contains(reader)) {
             readers.add(reader);
-            this.destinationFileName=reader.fileName;
         }
     }
 

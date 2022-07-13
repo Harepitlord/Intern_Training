@@ -33,4 +33,12 @@ public class DataRecord {
     public void put(String key,String value) {
         record.put(key, value);
     }
+
+    public DataRecord fetchColumn(ArrayList<String> fetchColumns) {
+        DataRecord recordObj = new DataRecord();
+        for (String s : fetchColumns) {
+            recordObj.put(s, get(s));
+        }
+        return recordObj;
+    }
 }
