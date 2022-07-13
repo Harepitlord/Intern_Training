@@ -65,18 +65,14 @@ public class QueryEngine {
         if(query==null)
             return dataRecords;
         return (ArrayList<DataRecord>) dataRecords.stream().filter(query)
-                .map(dataRecord -> { DataRecord recordObj = new DataRecord();
-                                    for (String s : fetchColumnsSet) {
-                                        recordObj.getRecord().put(s, dataRecord.getRecord().get(s));
-                                    }
-                                    return recordObj; })
+                .map(dataRecord -> dataRecord.fetchColumn(fetchColumnsSet))
                 .collect(Collectors.toList());
     }
 
     public void fetchColumns(){
         Map<String,String> record=dataRecords.get(0).getRecord();
         Set<String> keySet=record.keySet();
-        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end");
+        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end. All columns enter end");
         System.out.println("All "+keySet);
         fetchColumnsSet = new ArrayList<>();
         String colName="Start";
@@ -84,6 +80,9 @@ public class QueryEngine {
             colName=sc.nextLine();
             fetchColumnsSet.add(colName);
         }
+        if(fetchColumnsSet.size()<1)
+            fetchColumnsSet.addAll(keySet);
+
         fetchColumnsSet.remove(fetchColumnsSet.size()-1);
     }
 
