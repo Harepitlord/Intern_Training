@@ -1,6 +1,7 @@
 package com.striim.BasicFileAdapters.query;
 
 import com.striim.BasicFileAdapters.database.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -56,17 +57,17 @@ public class QueryEngine {
     public void fetchColumns(){
         Map<String,String> record=database.getDataObjArray().get(0).getRecord();
         Set<String> keySet=record.keySet();
-        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end.For all columns enter end");
-        System.out.println("All "+keySet);
+        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end.For All Columns enter End.");
+        System.out.println(keySet);
         fetchColumnsSet = new ArrayList<>();
         String colName="Start";
-        while(!colName.equals("END")){
-            colName=sc.nextLine().toUpperCase();
+        while(! colName.equalsIgnoreCase("END")){
+            colName=sc.nextLine();
             fetchColumnsSet.add(colName);
         }
         if(fetchColumnsSet.size()<=1)
             fetchColumnsSet.addAll(keySet);
-        fetchColumnsSet.remove(0);
+        fetchColumnsSet.remove(fetchColumnsSet.size()-1);
     }
 
 }
