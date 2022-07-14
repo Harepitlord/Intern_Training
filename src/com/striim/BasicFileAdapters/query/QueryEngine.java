@@ -62,8 +62,19 @@ public class QueryEngine {
         fetchColumnsSet = new ArrayList<>();
         String colName="Start";
         while(! colName.equalsIgnoreCase("END")){
-            colName=sc.nextLine();
-            fetchColumnsSet.add(colName);
+            colName=sc.nextLine().trim();
+            boolean colfound=false;
+            for(String key : keySet){
+                if(key.equals(colName) || colName.equalsIgnoreCase("END")){
+                    colfound=true;
+                }
+            }
+            if(colfound) {
+                fetchColumnsSet.add(colName);
+            }
+            else{
+                System.out.println("Enter the column name correctly !!!");
+            }
         }
         if(fetchColumnsSet.size()<=1)
             fetchColumnsSet.addAll(keySet);
