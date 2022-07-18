@@ -66,7 +66,7 @@ public class QueryEngine {
         }
         if(fetchColumnsSet.size()<=1)
             fetchColumnsSet.addAll(keySet);
-        fetchColumnsSet.remove(0);
+        fetchColumnsSet.remove(fetchColumnsSet.size()-1);
     }
 
 }
