@@ -13,7 +13,8 @@ import java.util.Scanner;
 public class ConsoleInterface implements UserInterface {
 
     private Scanner scanner;
-    private ArrayList<FileConfig> files;
+    private ArrayList<FileConfig> readerConfigs;
+    private ArrayList<FileConfig> writerConfigs;
 
     @Autowired
     public void setScanner(Scanner scanner) {
@@ -21,8 +22,42 @@ public class ConsoleInterface implements UserInterface {
     }
 
     @Bean
+    @Override
     public UserInterface getInterface() {
         return new ConsoleInterface();
+    }
+
+    @Override
+    public void prepareReaderFileConfigs() {
+        readerConfigs = new ArrayList<>();
+        readerConfigs.addAll(prepareFileConfigs("Reader"));
+    }
+
+    @Override
+    public void prepareWriterFileConfigs() {
+        writerConfigs = new ArrayList<>();
+        writerConfigs.addAll(prepareFileConfigs("Writer"));
+
+    }
+
+    @Override
+    public ArrayList<FileConfig> getReaderFileConfigs() {
+        return readerConfigs;
+    }
+
+    @Override
+    public ArrayList<FileConfig> getWriterFileConfigs() {
+        return writerConfigs;
+    }
+
+    @Override
+    public FileConfig getReaderFileConfig() {
+        return getFileConfig("Reader");
+    }
+
+    @Override
+    public FileConfig getWriterFileConfig() {
+        return getFileConfig("Writer");
     }
 
     public void fileSpecificConfig(FileConfig fileConfig) {
@@ -44,7 +79,7 @@ public class ConsoleInterface implements UserInterface {
         while (true) {
             path = scanner.nextLine().trim();
             if (path.length() == 0 || path.equals(";")) {
-                if (files.size() > 0)
+                if (readerConfigs.size() > 0)
                     next = false;
                 path = path.substring(0, path.length() - 1);
             }
@@ -65,19 +100,27 @@ public class ConsoleInterface implements UserInterface {
         fileConfig.setFileType(fileConfig.getFilePath().substring(index).toUpperCase());
     }
 
-    public void prepareFileConfigs() {
-        files = new ArrayList<>();
+    private FileConfig getFileConfig(String type) {
+        FileConfig fileConfig = new FileConfig();
+        filePathInput(fileConfig);
+
+        fileConfig.setType(fileConfig.getFileType()+type);
+        return fileConfig;
+    }
+
+    private ArrayList<FileConfig> prepareFileConfigs(String type) {
         boolean next = true;
+        ArrayList<FileConfig> temp = new ArrayList<>();
+        System.out.printf("Enter the details of the %s%n",type);
         while (next) {
             FileConfig fileConfig = new FileConfig();
 
             next = filePathInput(fileConfig);
 
-            files.add(fileConfig);
-        }
-    }
+            fileConfig.setType(fileConfig.getFileType()+type);
 
-    public ArrayList<FileConfig> getFileConfigs() {
-        return files;
+            temp.add(fileConfig);
+        }
+        return temp;
     }
 }

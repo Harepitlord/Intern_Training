@@ -8,7 +8,15 @@ public interface UserInterface {
 
     public UserInterface getInterface();
 
-    public void prepareFileConfigs();
+    public void prepareReaderFileConfigs();
 
-    public ArrayList<FileConfig> getFileConfigs();
+    public void prepareWriterFileConfigs();
+
+    public ArrayList<FileConfig> getReaderFileConfigs();
+
+    public ArrayList<FileConfig> getWriterFileConfigs();
+
+    public FileConfig getReaderFileConfig();
+
+    public FileConfig getWriterFileConfig();
 }

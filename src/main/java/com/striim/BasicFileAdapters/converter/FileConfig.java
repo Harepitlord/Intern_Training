@@ -8,6 +8,7 @@ public class FileConfig {
     protected String filePath;
     protected String fileType;
     protected String delimiter;
+    protected String type;
 
     public String getFileType() {
         return fileType;
@@ -15,6 +16,14 @@ public class FileConfig {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setFilePath(String path) {
@@ -29,5 +38,7 @@ public class FileConfig {
         this.fileType = fileType;
     }
 
-
+    public void setType(String type) {
+        this.type = type.toUpperCase();
+    }
 }
