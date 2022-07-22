@@ -3,9 +3,9 @@ package com.striim.BasicFileAdapters.database;
 import java.util.ArrayList;
 
 // This class acts as Java-based imitation of database
-public class InMemoryDatabase {
+public class InMemoryDatabase implements StorageSpace {
 
-    private final ArrayList<DataRecord> dataObjArray =new ArrayList<>();
+    private final ArrayList<DataRecord> dataObjArray = new ArrayList<>();
 
     public ArrayList<DataRecord> getDataObjArray() {
         return dataObjArray;
