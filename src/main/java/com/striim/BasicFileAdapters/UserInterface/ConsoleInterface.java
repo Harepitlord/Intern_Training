@@ -71,8 +71,7 @@ public class ConsoleInterface implements UserInterface {
         }
     }
 
-    public boolean filePathInput(FileConfig fileConfig) {
-
+    private boolean filePathInput(FileConfig fileConfig) {
         String path;
         System.out.println("Enter The file Path: ");
         boolean next = true;

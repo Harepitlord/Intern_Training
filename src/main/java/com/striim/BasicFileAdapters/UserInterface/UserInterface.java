@@ -19,4 +19,5 @@ public interface UserInterface {
     public FileConfig getReaderFileConfig();
 
     public FileConfig getWriterFileConfig();
+
 }

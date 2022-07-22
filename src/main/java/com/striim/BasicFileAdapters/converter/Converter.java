@@ -31,6 +31,7 @@ public class Converter {
     private ExecutorService executorService;
 
 
+
     public Converter() {
         this.database = new InMemoryDatabase();
         this.readers = new ArrayList<>();
@@ -47,7 +48,7 @@ public class Converter {
 
         readFiles(executorService);
 
-        writers(executorService);
+        writers();
 
         executorService.shutdown();
 
@@ -77,61 +78,16 @@ public class Converter {
     }
 
     public void addReaders() {
-        ReadersWritersFactory.readerMenu();
-        boolean another = true;
-        do {
-            System.out.println("Enter the reader type and file path separated by a comma: (End with ; to end the input)");
-            String input = scanner.nextLine();
-            if(input.length() == 0 || input.equals(";"))
-                if(readers.size()>0)
-                    return;
-                else
-                    continue;
-            if(input.endsWith(";")) {
-                another = false;
-                input = input.substring(0, input.length() - 1);
-            }
-            System.out.println(input);
-            Reader reader = ReadersWritersFactory.getReader(input.split(","));
-            if(reader == null) {
-                another = true;
-                System.out.println("Enter proper reader type and file path");
-                continue;
-            }
-            reader.initiate(this.scanner);
-            this.addReader(reader);
-        }while(another);
+        ArrayList<FileConfig> readersFileConfigs=userInterface.getReaderFileConfigs();
+        readersFileConfigs.forEach(r -> readers.add((Reader)context.getBean(r.getType())));
     }
 
-    public void writers(ExecutorService executorService) {
-        ReadersWritersFactory.writerMenu();
-        boolean another = true;
-        do {
-            System.out.println("Enter the writer type, folder path and file name separated by a comma : (End with ; to end the input)");
-            String input = scanner.nextLine();
-            if(input.length() == 0 || input.equals(";"))
-                if(writers.size()>0)
-                    return;
-                else
-                    continue;
-            if (input.endsWith(";")) {
-                another = false;
-                input = input.substring(0, input.length() - 1);
-            }
-            Writer writer = ReadersWritersFactory.getWriter(input.split(","));
-            if(writer == null) {
-                another = true;
-                System.out.println("Enter proper writer type and file path");
-                continue;
-            }
-            if(this.addWriter(writer)) {
-                writer.writeFile(scanner, database, executorService);
-            }
-        }while (another);
+    public void writers() {
+        ArrayList<FileConfig> writersFileConfigs=userInterface.getWriterFileConfigs();
+        writersFileConfigs.forEach(w -> writers.add((Writer)context.getBean(w.getType())));
     }
 
     public void readFiles(ExecutorService executorService) {
-//        readers.forEach(e-> executorService.submit(() -> database.addDataObjects(e.readFile())));
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();
@@ -141,5 +97,4 @@ public class Converter {
         }
         System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
     }
-
 }
