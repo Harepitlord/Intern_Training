@@ -2,10 +2,9 @@ package com.striim.BasicFileAdapters.converter;
 
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class FileConfig {
 
-    public String getFileType;
     protected String filePath;
     protected String fileType;
     protected String delimiter;

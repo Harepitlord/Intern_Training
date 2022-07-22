@@ -26,7 +26,7 @@ public class ConsoleInterface implements UserInterface {
     }
 
     public void fileSpecificConfig(FileConfig fileConfig) {
-        if (fileConfig.getFileType.equals("CSV")) {
+        if (fileConfig.getFileType().equals("CSV")) {
             System.out.println("Enter the delimiter : (default => ',')");
             char delim = ',';
             String val = scanner.nextLine();
@@ -77,7 +77,7 @@ public class ConsoleInterface implements UserInterface {
         }
     }
 
-    public ArrayList<FileConfig> getFiles() {
+    public ArrayList<FileConfig> getFileConfigs() {
         return files;
     }
 }
