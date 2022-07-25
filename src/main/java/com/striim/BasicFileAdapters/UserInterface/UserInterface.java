@@ -1,25 +1,31 @@
 package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.database.DataRecord;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public interface UserInterface {
 
-    public UserInterface getInterface();
+    UserInterface getInterface();
 
-    public void prepareReaderFileConfigs();
+    void prepareReaderFileConfigs();
 
-    public void prepareWriterFileConfigs();
+    void prepareWriterFileConfigs();
 
-    public ArrayList<FileConfig> getReaderFileConfigs();
+    ArrayList<FileConfig> getReaderFileConfigs();
 
-    public ArrayList<FileConfig> getWriterFileConfigs();
+    ArrayList<FileConfig> getWriterFileConfigs();
 
-    public FileConfig getReaderFileConfig();
+    FileConfig getReaderFileConfig();
 
-    public FileConfig getWriterFileConfig();
+    FileConfig getWriterFileConfig();
 
-    public String setStorageType();
+    Predicate<DataRecord> generateQueries();
+
+    ArrayList<String> fetchColumns(ArrayList<String> keyset);
+
+    String getStorageType();
 
 }

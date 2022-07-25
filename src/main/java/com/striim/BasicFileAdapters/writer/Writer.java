@@ -1,41 +1,42 @@
 package com.striim.BasicFileAdapters.writer;
 
-import com.striim.BasicFileAdapters.database.*;
-import java.io.*;
-import java.util.*;
+import com.striim.BasicFileAdapters.UserInterface.UserInterface;
+import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.database.StorageSpace;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 public abstract class Writer {
 
     protected FileWriter fileWriter;
     protected String state;
-    protected Scanner scanner;
+    protected UserInterface userInterface;
+    protected FileConfig fileConfig;
 
-    protected boolean prepareWriter(String filepath){
+    protected boolean prepareWriter(FileConfig fileConfig) {
         try {
-            File file = new File(filepath);
+            File file = new File(fileConfig.getFilePath());
             boolean newFile = file.createNewFile();
-            fileWriter=new FileWriter(file,true);
+            fileWriter = new FileWriter(file, true);
             state = "File Connected";
             return true;
-        }
-        catch(IOException ex){
-            state="File Error";
-            return getFilePath();
+        } catch (IOException ex) {
+            state = "File Error";
+            return false;
         }
     }
 
-    private boolean getFilePath() {
-        System.out.println("Enter proper File path for the csv file: ");
-        String temp = scanner.nextLine();
-        if(temp.length()>0)
-            return prepareWriter(temp);
-        else
-            return getFilePath();
+    public void setFileConfig(FileConfig fileConfig) {
+        this.fileConfig = fileConfig;
     }
 
     public abstract String getName();
-    public abstract void writeFile(Scanner scanner, InMemoryDatabase database, ExecutorService executorService);
-    public abstract Writer getInstance(String filePath);
+
+    public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
+
+    public abstract Writer getInstance(FileConfig fileConfig);
 
 }

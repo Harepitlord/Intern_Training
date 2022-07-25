@@ -1,7 +1,6 @@
 package com.striim.BasicFileAdapters.converter;
 
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
-import com.striim.BasicFileAdapters.database.InMemoryDatabase;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
@@ -44,7 +43,7 @@ public class Converter {
 
         prepareUserInterface();
 
-        this.storage = (StorageSpace) context.getBean(userInterface.setStorageType());
+        this.storage = (StorageSpace) context.getBean(userInterface.getStorageType());
 
         addReaders();
 
@@ -84,12 +83,10 @@ public class Converter {
         }
     }
 
-    public boolean addWriter(Writer writer) {
+    public void addWriter(Writer writer) {
         if (!writers.contains(writer)) {
             writers.add(writer);
-            return true;
         }
-        return false;
     }
 
     public void addReaders() {
@@ -97,12 +94,17 @@ public class Converter {
         readersFileConfigs.forEach(r -> {
             Reader reader = (Reader) context.getBean(r.getType());
             reader.setFileConfig(r);
-            readers.add(reader);});
+            addReader(reader);
+        });
     }
 
     public void writers() {
-        ArrayList<FileConfig> writersFileConfigs=userInterface.getWriterFileConfigs();
-        writersFileConfigs.forEach(w -> writers.add((Writer)context.getBean(w.getType())));
+        ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
+        writersFileConfigs.forEach(w -> {
+            Writer writer = (Writer) context.getBean(w.getType());
+            writer.setFileConfig(w);
+            addWriter(writer);
+        });
     }
 
     public void readFiles(ExecutorService executorService) {
