@@ -1,6 +1,8 @@
 package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.database.DataRecord;
+import com.striim.BasicFileAdapters.query.FilterFactory;
 import com.striim.BasicFileAdapters.reader.CsvReader;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.JsonWriter;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 @Component
 public class ConsoleInterface implements UserInterface {
@@ -70,7 +73,7 @@ public class ConsoleInterface implements UserInterface {
         return getFileConfig("Reader");
     }
 
-    public String setStorageType(){
+    public String getStorageType() {
         System.out.println("Enter the storage type : ");
         return scanner.nextLine().trim().toUpperCase();
     }
@@ -136,10 +139,62 @@ public class ConsoleInterface implements UserInterface {
 
             next = filePathInput(fileConfig);
 
-            fileConfig.setType(fileConfig.getFileType()+type);
+            fileConfig.setType(fileConfig.getFileType() + type);
 
             temp.add(fileConfig);
         }
         return temp;
+    }
+
+    public Predicate<DataRecord> generateQueries() {
+
+        Predicate<DataRecord> query = null;
+
+        System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
+        System.out.println("eg : col > val,col < val;");
+        boolean another = true;
+        do {
+            String input = scanner.nextLine();
+            if (input.length() == 0 || input.equals(";"))
+                return null;
+            if (input.endsWith(";")) {
+                another = false;
+                input = input.substring(0, input.length() - 1);
+            }
+            String[] constraints = input.split(",");
+            for (String constraint : constraints) {
+                if (query == null)
+                    query = FilterFactory.getFilter(constraint);
+                else {
+                    Predicate<DataRecord> temp = FilterFactory.getFilter(constraint);
+                    if (temp != null)
+                        query = query.and(temp);
+                }
+            }
+        } while (another);
+        return query;
+    }
+
+    public ArrayList<String> fetchColumns(ArrayList<String> keySet) {
+        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end.For All Columns enter End.");
+        System.out.println(keySet);
+        ArrayList<String> fetchColumnsSet = new ArrayList<>();
+        String colName = "Start";
+        while (!colName.equalsIgnoreCase("END")) {
+            colName = scanner.nextLine().trim();
+            boolean colfound = false;
+            for (String key : keySet) {
+                if (key.equals(colName) || colName.equalsIgnoreCase("END")) {
+                    colfound = true;
+                    break;
+                }
+            }
+            if (colfound) {
+                fetchColumnsSet.add(colName);
+            } else {
+                System.out.println("Enter the column name correctly !!!");
+            }
+        }
+        return fetchColumnsSet;
     }
 }
