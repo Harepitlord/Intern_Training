@@ -55,6 +55,12 @@ public class ConsoleInterface implements UserInterface {
         return getFileConfig("Reader");
     }
 
+    public String setStorageType(){
+        System.out.println("Enter the storage type : ");
+        String storageType=scanner.nextLine().trim().toUpperCase();
+        return storageType;
+    }
+
     @Override
     public FileConfig getWriterFileConfig() {
         return getFileConfig("Writer");

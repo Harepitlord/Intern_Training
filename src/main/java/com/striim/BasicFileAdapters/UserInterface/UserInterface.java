@@ -20,4 +20,6 @@ public interface UserInterface {
 
     public FileConfig getWriterFileConfig();
 
+    public String setStorageType();
+
 }

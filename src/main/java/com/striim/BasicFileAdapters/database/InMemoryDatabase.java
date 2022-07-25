@@ -1,8 +1,13 @@
 package com.striim.BasicFileAdapters.database;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 
 // This class acts as Java-based imitation of database
+@Component
+@Qualifier("INMEMORYDATABASE")
 public class InMemoryDatabase implements StorageSpace {
 
     private final ArrayList<DataRecord> dataObjArray = new ArrayList<>();

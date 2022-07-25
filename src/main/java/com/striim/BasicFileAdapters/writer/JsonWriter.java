@@ -3,9 +3,14 @@ package com.striim.BasicFileAdapters.writer;
 import com.striim.BasicFileAdapters.database.*;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import org.json.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
+@Component
+@Qualifier("JSONWRITER")
 public class JsonWriter extends Writer {
 
     public JsonWriter() {

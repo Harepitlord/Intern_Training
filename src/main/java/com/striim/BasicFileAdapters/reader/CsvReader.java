@@ -3,11 +3,16 @@ package com.striim.BasicFileAdapters.reader;
 import com.striim.BasicFileAdapters.database.*;
 import com.opencsv.*;
 import com.opencsv.exceptions.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.util.*;
 
 // This class will be used to read data from the csv file and parse it into dataObjects and returns those to
 // converter interface
+@Component
+@Qualifier("CSVREADER")
 public class CsvReader extends Reader {
 
     private CSVReader reader;

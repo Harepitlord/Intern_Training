@@ -2,6 +2,7 @@ package com.striim.BasicFileAdapters.converter;
 
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.database.InMemoryDatabase;
+import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class Converter {
 
     private final ArrayList<Reader> readers;
     private final ArrayList<Writer> writers;
-    private InMemoryDatabase database;
+    private StorageSpace storage;
     @Autowired
     private Scanner scanner;
     private UserInterface userInterface;
@@ -33,7 +34,6 @@ public class Converter {
 
 
     public Converter() {
-        this.database = new InMemoryDatabase();
         this.readers = new ArrayList<>();
         this.writers = new ArrayList<>();
     }
@@ -43,6 +43,8 @@ public class Converter {
         this.context = context;
 
         prepareUserInterface();
+
+        this.storage = (StorageSpace) context.getBean(userInterface.setStorageType());
 
         addReaders();
 
@@ -88,7 +90,7 @@ public class Converter {
     }
 
     public void readFiles(ExecutorService executorService) {
-        List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> database.addDataObjects(e.readFile()))).collect(Collectors.toList());
+        List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> storage.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();
         System.out.print("Files are being read .");
