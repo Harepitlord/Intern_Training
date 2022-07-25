@@ -8,6 +8,7 @@ import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.JsonWriter;
 import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
-@Component
+@Component("ConsoleInterface")
 public class ConsoleInterface implements UserInterface {
 
     private Scanner scanner;
@@ -45,16 +46,17 @@ public class ConsoleInterface implements UserInterface {
     public void prepareWriterFileConfigs() {
         writerConfigs = new ArrayList<>();
         writerConfigs.addAll(prepareFileConfigs("Writer"));
-
     }
 
     @Override
     public ArrayList<FileConfig> getReaderFileConfigs() {
+        prepareReaderFileConfigs();
         return readerConfigs;
     }
 
     @Override
     public ArrayList<FileConfig> getWriterFileConfigs() {
+        prepareWriterFileConfigs();
         return writerConfigs;
     }
 
@@ -86,14 +88,13 @@ public class ConsoleInterface implements UserInterface {
 
     private boolean filePathInput(FileConfig fileConfig) {
         String path;
-        System.out.println("Enter The file Path: ");
+        System.out.println("Enter the file Path: ");
         boolean next = true;
         while (true) {
             path = scanner.nextLine().trim();
-            if (path.length() == 0 || path.equals(";")) {
-                if (readerConfigs.size() > 0)
-                    next = false;
-                path = path.substring(0, path.length() - 1);
+            if (path.length() == 0 || path.endsWith(";")) {
+                next = false;
+                path = path.substring(0, path.length()-1);
             }
             File f = new File(path);
             if (f.isFile()) {

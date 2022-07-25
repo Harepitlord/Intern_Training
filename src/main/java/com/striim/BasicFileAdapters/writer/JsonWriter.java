@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
-@Component
-@Qualifier("JSONWRITER")
+@Component("JSONWRITER")
 public class JsonWriter extends Writer {
 
     public JsonWriter() {

@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 // This class acts as Java-based imitation of database
-@Component
-@Qualifier("INMEMORYDATABASE")
+@Component("INMEMORYDATABASE")
 public class InMemoryDatabase implements StorageSpace {
 
     private final ArrayList<DataRecord> dataObjArray = new ArrayList<>();

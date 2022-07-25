@@ -11,8 +11,7 @@ import java.util.*;
 
 // This class will be used to read data from the csv file and parse it into dataObjects and returns those to
 // converter interface
-@Component
-@Qualifier("CSVREADER")
+@Component("CSVREADER")
 public class CsvReader extends Reader {
 
     private CSVReader reader;

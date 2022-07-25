@@ -16,8 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-@Component
-@Qualifier("converter")
+@Component("converter")
 public class Converter {
 
     private final ArrayList<Reader> readers;
@@ -67,7 +66,7 @@ public class Converter {
                     return;
                 }
                 case 2: {
-                    this.userInterface = (UserInterface) context.getBean("XML Interface");
+                    this.userInterface = (UserInterface) context.getBean("XMLInterface");
                     return;
                 }
                 default: {
@@ -92,7 +91,7 @@ public class Converter {
     public void addReaders() {
         ArrayList<FileConfig> readersFileConfigs=userInterface.getReaderFileConfigs();
         readersFileConfigs.forEach(r -> {
-            Reader reader = (Reader) context.getBean(r.getType());
+            Reader reader = (Reader) context.getBean(r.getType().substring(1));
             reader.setFileConfig(r);
             addReader(reader);
         });
@@ -101,7 +100,7 @@ public class Converter {
     public void writers() {
         ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
         writersFileConfigs.forEach(w -> {
-            Writer writer = (Writer) context.getBean(w.getType());
+            Writer writer = (Writer) context.getBean(w.getType().substring(1));
             writer.setFileConfig(w);
             addWriter(writer);
         });
@@ -116,14 +115,6 @@ public class Converter {
             loop = !futures.stream().allMatch(Future::isDone);
         }
         System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
-    }
-
-    public static void readerMenu() {
-
-    }
-
-    public static void writerMenu() {
-
     }
 
 }
