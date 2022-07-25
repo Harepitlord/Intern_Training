@@ -24,16 +24,6 @@ public class ConsoleInterface implements UserInterface {
     private ArrayList<FileConfig> readerConfigs;
     private ArrayList<FileConfig> writerConfigs;
 
-    public static HashMap<String, Reader> readers = new HashMap<>();
-    public static HashMap<String, Writer> writers = new HashMap<>();
-
-    static {
-
-        readers.put("CSV READER",new CsvReader());
-
-        writers.put("JSON WRITER", new JsonWriter());
-    }
-
     @Autowired
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
