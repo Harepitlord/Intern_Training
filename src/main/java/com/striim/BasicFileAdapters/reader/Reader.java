@@ -1,5 +1,7 @@
 package com.striim.BasicFileAdapters.reader;
 
+import com.striim.BasicFileAdapters.UserInterface.UserInterface;
+import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 
 import java.io.FileNotFoundException;
@@ -9,20 +11,24 @@ import java.util.Scanner;
 
 abstract public class Reader {
 
-    protected String filePath;
+    protected FileConfig fileConfig;
+
     protected FileReader fileReader;
+
     protected ArrayList<String> headers;
-    protected Scanner scanner;
+
+    protected UserInterface userInterface;
+
     protected String state;
 
     public Reader() {
         state = "Initial";
     }
 
-    protected boolean prepareReader(String filePath) {
-        this.filePath = filePath;
+    protected boolean prepareReader(FileConfig fileConfig) {
+        this.fileConfig = fileConfig;
         try {
-            fileReader = new FileReader(filePath);
+            fileReader = new FileReader(fileConfig.getFilePath());
             state = "File Connected";
             return true;
         } catch (FileNotFoundException e) {
@@ -30,6 +36,10 @@ abstract public class Reader {
             state = "File Not Found";
             return false;
         }
+    }
+
+    public void setFileConfig(FileConfig fileConfig) {
+        this.fileConfig = fileConfig;
     }
 
     public String getState() {
@@ -41,9 +51,9 @@ abstract public class Reader {
     }
 
     abstract protected boolean prepareHeaders();
-    abstract public Reader getInstance(String filePath);
+
     abstract public ArrayList<DataRecord> readFile();
-    abstract public void initiate(Scanner scanner);
+
     protected abstract void finalize();
 
 }

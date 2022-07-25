@@ -14,7 +14,7 @@ public class ReadersWritersFactory {
 
     static {
 
-        readers.put("CSV READER",new CsvReader(null));
+        readers.put("CSV READER",new CsvReader());
 
         writers.put("JSON WRITER", new JsonWriter());
     }
@@ -26,24 +26,10 @@ public class ReadersWritersFactory {
         }
     }
 
-    public static Reader getReader(String[] input) {
-        String choice = input[0].toUpperCase(),filePath = input[1];
-        if(readers.containsKey(choice))
-            return readers.get(choice).getInstance(filePath);
-        return null;
-    }
-
     public static void writerMenu() {
         System.out.println("Available Writers are: (Enter the writer name)");
         for(String s : writers.keySet()) {
             System.out.println("-> "+s);
         }
-    }
-
-    public static Writer getWriter(String[] input) {
-        String choice = input[0].toUpperCase(),filePath = input[1],fileName = input[2];
-        if (writers.containsKey(choice))
-            return writers.get(choice).getInstance(filePath+"/"+fileName);
-        return null;
     }
 }

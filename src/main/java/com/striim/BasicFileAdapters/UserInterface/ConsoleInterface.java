@@ -1,12 +1,17 @@
 package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.reader.CsvReader;
+import com.striim.BasicFileAdapters.reader.Reader;
+import com.striim.BasicFileAdapters.writer.JsonWriter;
+import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 @Component
@@ -15,6 +20,16 @@ public class ConsoleInterface implements UserInterface {
     private Scanner scanner;
     private ArrayList<FileConfig> readerConfigs;
     private ArrayList<FileConfig> writerConfigs;
+
+    public static HashMap<String, Reader> readers = new HashMap<>();
+    public static HashMap<String, Writer> writers = new HashMap<>();
+
+    static {
+
+        readers.put("CSV READER",new CsvReader());
+
+        writers.put("JSON WRITER", new JsonWriter());
+    }
 
     @Autowired
     public void setScanner(Scanner scanner) {
@@ -57,8 +72,7 @@ public class ConsoleInterface implements UserInterface {
 
     public String setStorageType(){
         System.out.println("Enter the storage type : ");
-        String storageType=scanner.nextLine().trim().toUpperCase();
-        return storageType;
+        return scanner.nextLine().trim().toUpperCase();
     }
 
     @Override

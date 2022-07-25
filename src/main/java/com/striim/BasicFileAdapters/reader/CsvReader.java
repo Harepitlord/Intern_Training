@@ -18,22 +18,8 @@ public class CsvReader extends Reader {
     private CSVReader reader;
     private char delimiter;
 
-    public CsvReader(String filePath) {
-        this.filePath = filePath;
+    public CsvReader() {
         delimiter = ',';
-    }
-
-    public Reader getInstance(String filePath) {
-        return new CsvReader(filePath);
-    }
-
-    private void getFilePath() {
-        System.out.println("Enter proper File path for the csv file: ");
-        String temp = scanner.nextLine();
-        if(temp.length()>0)
-            this.filePath = temp;
-        else
-            getFilePath();
     }
 
     private ArrayList<DataRecord> errorHandling() {
@@ -69,18 +55,8 @@ public class CsvReader extends Reader {
                 return null;
             }
         }
-        getFilePath();
+        fileConfig = userInterface.getReaderFileConfig();
         return readFile();
-    }
-
-    @Override
-    public void initiate(Scanner sc) {
-        scanner = sc;
-        System.out.print("Enter the delimiter for the data in csv (Leave blank for ','): ");
-        String temp = scanner.nextLine();
-        if(temp.length()>1) {
-            delimiter = temp.charAt(0);
-        }
     }
 
     protected boolean prepareHeaders() {
@@ -111,8 +87,10 @@ public class CsvReader extends Reader {
 
     public ArrayList<DataRecord> readFile() {
         try {
-            if (!this.prepareReader(filePath))
+            if (!this.prepareReader(fileConfig))
                 return errorHandling();
+
+            delimiter = fileConfig.getDelimiter().charAt(0);
 
             if(headers == null)
                 if (!this.prepareHeaders())

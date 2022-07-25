@@ -62,6 +62,19 @@ public class Converter {
         System.out.println("Enter the choice of input: 1.ConsoleInterface 2.XML Interface");
         while (true) {
             String s = scanner.nextLine().trim();
+            switch (Integer.parseInt(s)) {
+                case 1: {
+                    this.userInterface = (UserInterface) context.getBean("ConsoleInterface");
+                    return;
+                }
+                case 2: {
+                    this.userInterface = (UserInterface) context.getBean("XML Interface");
+                    return;
+                }
+                default: {
+                    System.out.println("Improper choice");
+                }
+            }
         }
     }
 
@@ -81,7 +94,10 @@ public class Converter {
 
     public void addReaders() {
         ArrayList<FileConfig> readersFileConfigs=userInterface.getReaderFileConfigs();
-        readersFileConfigs.forEach(r -> readers.add((Reader)context.getBean(r.getType())));
+        readersFileConfigs.forEach(r -> {
+            Reader reader = (Reader) context.getBean(r.getType());
+            reader.setFileConfig(r);
+            readers.add(reader);});
     }
 
     public void writers() {
