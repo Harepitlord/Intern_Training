@@ -25,6 +25,16 @@ abstract public class Reader {
         state = "Initial";
     }
 
+    private static ArrayList<String> availableReaders;
+
+    static{
+        availableReaders.add("CSVREADER");
+    }
+
+    public ArrayList<String> getAvailableReaders(){
+        return availableReaders;
+    }
+
     protected boolean prepareReader(FileConfig fileConfig) {
         this.fileConfig = fileConfig;
         try {

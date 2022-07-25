@@ -130,7 +130,7 @@ public class ConsoleInterface implements UserInterface {
     private ArrayList<FileConfig> prepareFileConfigs(String type) {
         boolean next = true;
         ArrayList<FileConfig> temp = new ArrayList<>();
-        System.out.printf("Enter the details of the %s%n",type);
+        System.out.printf("Enter the details of the %s/n",type);
         while (next) {
             FileConfig fileConfig = new FileConfig();
 
@@ -142,4 +142,5 @@ public class ConsoleInterface implements UserInterface {
         }
         return temp;
     }
+
 }

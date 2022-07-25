@@ -115,4 +115,13 @@ public class Converter {
         }
         System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
     }
+
+    public static void readerMenu() {
+
+    }
+
+    public static void writerMenu() {
+
+    }
+
 }

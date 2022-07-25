@@ -11,6 +11,16 @@ public abstract class Writer {
     protected String state;
     protected Scanner scanner;
 
+    private static ArrayList<String> availableWriters;
+
+    static{
+        availableWriters.add("JSONWRITER");
+    }
+
+    public ArrayList<String> getAvailableWriters(){
+        return availableWriters;
+    }
+
     protected boolean prepareWriter(String filepath){
         try {
             File file = new File(filepath);
