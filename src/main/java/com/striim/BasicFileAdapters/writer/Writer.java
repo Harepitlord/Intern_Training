@@ -7,6 +7,7 @@ import com.striim.BasicFileAdapters.database.StorageSpace;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
 public abstract class Writer {
@@ -15,6 +16,17 @@ public abstract class Writer {
     protected String state;
     protected UserInterface userInterface;
     protected FileConfig fileConfig;
+
+    private static ArrayList<String> availableWriters;
+
+    static{
+        availableWriters=new ArrayList<>();
+        availableWriters.add("JSONWRITER");
+    }
+
+    public static ArrayList<String> getAvailableWriters(){
+        return availableWriters;
+    }
 
     protected boolean prepareWriter(FileConfig fileConfig) {
         try {

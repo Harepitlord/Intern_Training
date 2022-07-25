@@ -28,10 +28,11 @@ abstract public class Reader {
     private static ArrayList<String> availableReaders;
 
     static{
+        availableReaders=new ArrayList<>();
         availableReaders.add("CSVREADER");
     }
 
-    public ArrayList<String> getAvailableReaders(){
+    public static ArrayList<String> getAvailableReaders(){
         return availableReaders;
     }
 
