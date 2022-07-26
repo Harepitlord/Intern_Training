@@ -7,7 +7,6 @@ import com.striim.BasicFileAdapters.database.DataRecord;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 abstract public class Reader {
 
@@ -25,7 +24,7 @@ abstract public class Reader {
         state = "Initial";
     }
 
-    private static ArrayList<String> availableReaders;
+    private static final ArrayList<String> availableReaders;
 
     static{
         availableReaders=new ArrayList<>();

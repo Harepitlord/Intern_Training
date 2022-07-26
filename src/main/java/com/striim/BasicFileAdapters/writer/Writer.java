@@ -17,7 +17,7 @@ public abstract class Writer {
     protected UserInterface userInterface;
     protected FileConfig fileConfig;
 
-    private static ArrayList<String> availableWriters;
+    private static final ArrayList<String> availableWriters;
 
     static{
         availableWriters=new ArrayList<>();
@@ -28,10 +28,10 @@ public abstract class Writer {
         return availableWriters;
     }
 
-    protected boolean prepareWriter(FileConfig fileConfig) {
+    protected boolean prepareWriter() {
         try {
             File file = new File(fileConfig.getFilePath());
-            boolean newFile = file.createNewFile();
+            //boolean newFile = file.createNewFile();
             fileWriter = new FileWriter(file, true);
             state = "File Connected";
             return true;

@@ -5,7 +5,6 @@ import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -82,16 +81,18 @@ public class Converter {
         }
     }
 
-    public void addWriter(Writer writer) {
+    public boolean addWriter(Writer writer) {
         if (!writers.contains(writer)) {
             writers.add(writer);
+            return true;
         }
+        return false;
     }
 
     public void addReaders() {
         ArrayList<FileConfig> readersFileConfigs=userInterface.getReaderFileConfigs();
         readersFileConfigs.forEach(r -> {
-            Reader reader = (Reader) context.getBean(r.getType().substring(1));
+            Reader reader = (Reader) context.getBean(r.getType());
             reader.setFileConfig(r);
             addReader(reader);
         });
@@ -100,9 +101,10 @@ public class Converter {
     public void writers() {
         ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
         writersFileConfigs.forEach(w -> {
-            Writer writer = (Writer) context.getBean(w.getType().substring(1));
+            Writer writer = (Writer) context.getBean(w.getType());
             writer.setFileConfig(w);
-            addWriter(writer);
+            if (addWriter(writer))
+                writer.writeFile(userInterface, storage, executorService);
         });
     }
 

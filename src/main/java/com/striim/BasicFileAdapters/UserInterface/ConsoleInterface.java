@@ -3,18 +3,13 @@ package com.striim.BasicFileAdapters.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.query.FilterFactory;
-import com.striim.BasicFileAdapters.reader.CsvReader;
-import com.striim.BasicFileAdapters.reader.Reader;
-import com.striim.BasicFileAdapters.writer.JsonWriter;
-import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
@@ -66,8 +61,15 @@ public class ConsoleInterface implements UserInterface {
     }
 
     public String getStorageType() {
-        System.out.println("Enter the storage type : ");
-        return scanner.nextLine().trim().toUpperCase();
+        System.out.println("Enter the storage type : 1.InMemory DataStore");
+        while (true) {
+            String s = scanner.nextLine().trim();
+            if (Integer.parseInt(s) == 1) {
+                return "INMEMORYDATABASE";
+            } else {
+                System.out.println("Improper choice");
+            }
+        }
     }
 
     @Override
@@ -86,7 +88,7 @@ public class ConsoleInterface implements UserInterface {
         }
     }
 
-    private boolean filePathInput(FileConfig fileConfig) {
+    private boolean filePathInput(FileConfig fileConfig, String type) throws IOException {
         String path;
         System.out.println("Enter the file Path: ");
         boolean next = true;
@@ -94,12 +96,16 @@ public class ConsoleInterface implements UserInterface {
             path = scanner.nextLine().trim();
             if (path.length() == 0 || path.endsWith(";")) {
                 next = false;
-                path = path.substring(0, path.length()-1);
+                path = path.substring(0, path.length() - 1);
             }
             File f = new File(path);
-            if (f.isFile()) {
+            if (!f.isDirectory()) {
+                if (type.equals("WRITER")) {
+                    if (!f.createNewFile())
+                        break;
+                }
                 fileConfig.setFilePath(path);
-                setFileTypeType(fileConfig);
+                setFileType(fileConfig);
                 break;
             }
             System.out.println("Enter proper file path: ");
@@ -108,28 +114,34 @@ public class ConsoleInterface implements UserInterface {
         return next;
     }
 
-    protected void setFileTypeType(FileConfig fileConfig) {
-        int index = fileConfig.getFilePath().lastIndexOf(".");
+    protected void setFileType(FileConfig fileConfig) {
+        int index = fileConfig.getFilePath().lastIndexOf(".") + 1;
         fileConfig.setFileType(fileConfig.getFilePath().substring(index).toUpperCase());
     }
 
     private FileConfig getFileConfig(String type) {
         FileConfig fileConfig = new FileConfig();
-        filePathInput(fileConfig);
-
-        fileConfig.setType(fileConfig.getFileType()+type);
+        try {
+            filePathInput(fileConfig, type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fileConfig.setType(fileConfig.getFileType() + type);
         return fileConfig;
     }
 
     private ArrayList<FileConfig> prepareFileConfigs(String type) {
         boolean next = true;
         ArrayList<FileConfig> temp = new ArrayList<>();
-        System.out.printf("Enter the details of the %s%n",type);
+        System.out.printf("Enter the details of the %s : End with ';' to end the input \n", type);
         while (next) {
             FileConfig fileConfig = new FileConfig();
 
-            next = filePathInput(fileConfig);
-
+            try {
+                next = filePathInput(fileConfig, type);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             fileConfig.setType(fileConfig.getFileType() + type);
 
             temp.add(fileConfig);

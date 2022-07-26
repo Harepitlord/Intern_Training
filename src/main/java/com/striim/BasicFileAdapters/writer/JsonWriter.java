@@ -7,7 +7,6 @@ import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,7 +21,8 @@ public class JsonWriter extends Writer {
 
     public Writer getInstance(FileConfig fileConfig) {
         Writer writer = new JsonWriter();
-        if (writer.prepareWriter(fileConfig))
+        writer.setFileConfig(fileConfig);
+        if (writer.prepareWriter())
             return writer;
         else
             return null;
@@ -30,6 +30,9 @@ public class JsonWriter extends Writer {
 
 
     public void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService) {
+        if (!prepareWriter()) {
+            return;
+        }
         this.userInterface = userInterface;
         QueryEngine queryEngine = new QueryEngine(userInterface, database);
         queryEngine.fetchColumns();
