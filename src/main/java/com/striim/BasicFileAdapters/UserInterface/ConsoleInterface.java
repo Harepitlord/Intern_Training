@@ -99,7 +99,9 @@ public class ConsoleInterface implements UserInterface {
                 path = path.substring(0, path.length() - 1);
             }
             File f = new File(path);
-            if (!f.isDirectory()) {
+            String dir=path.substring(0,path.lastIndexOf("/")+1);
+            File directory=new File(dir);
+            if (directory.isDirectory()) {
                 if (type.equals("Writer")) {
                     f.createNewFile();
                     fileConfig.setFilePath(path);
