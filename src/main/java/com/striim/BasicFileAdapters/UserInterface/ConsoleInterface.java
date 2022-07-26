@@ -100,13 +100,17 @@ public class ConsoleInterface implements UserInterface {
             }
             File f = new File(path);
             if (!f.isDirectory()) {
-                if (type.equals("WRITER")) {
-                    if (!f.createNewFile())
-                        break;
+                if (type.equals("Writer")) {
+                    f.createNewFile();
+                    fileConfig.setFilePath(path);
+                    setFileType(fileConfig);
+                    break;
                 }
-                fileConfig.setFilePath(path);
-                setFileType(fileConfig);
-                break;
+                else if(type.equals("Reader") && f.isFile()){
+                    fileConfig.setFilePath(path);
+                    setFileType(fileConfig);
+                    break;
+                }
             }
             System.out.println("Enter proper file path: ");
         }
