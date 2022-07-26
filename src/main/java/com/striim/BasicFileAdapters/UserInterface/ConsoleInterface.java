@@ -3,6 +3,7 @@ package com.striim.BasicFileAdapters.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.query.FilterFactory;
+import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -103,10 +104,12 @@ public class ConsoleInterface implements UserInterface {
             File directory=new File(dir);
             if (directory.isDirectory()) {
                 if (type.equals("Writer")) {
-                    f.createNewFile();
-                    fileConfig.setFilePath(path);
-                    setFileType(fileConfig);
-                    break;
+                    if(path.contains(".") && Writer.getAvailableWriters().contains(path.substring(path.lastIndexOf(".")+1,path.length()).toUpperCase()+"WRITER")) {
+                        f.createNewFile();
+                        fileConfig.setFilePath(path);
+                        setFileType(fileConfig);
+                        break;
+                    }
                 }
                 else if(type.equals("Reader") && f.isFile()){
                     fileConfig.setFilePath(path);
