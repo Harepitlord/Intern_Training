@@ -115,4 +115,17 @@ public class QueryEngine {
         }
     }
 
+    public static boolean isProperConstraint(String constraint,ArrayList<String> keySet){
+        String[] temp = constraint.split(" ");
+        return (temp.length==3) && isValidColumn(temp[0],keySet) && isValidOperation(temp[1]);
+    }
+
+    private static boolean isValidColumn(String colName,ArrayList<String> keySet){
+        return keySet.contains(colName);
+    }
+
+    private static boolean isValidOperation(String op){
+        return FilterFactory.getAvailableOperation().contains(op);
+    }
+
 }
