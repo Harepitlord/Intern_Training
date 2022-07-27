@@ -41,7 +41,7 @@ public abstract class Writer {
     }
 
     public static boolean isAvailable(String path){
-        return getAvailableWriters().contains(path.substring(path.lastIndexOf(".")+1,path.length()).toUpperCase()+"WRITER");
+        return getAvailableWriters().contains(path.substring(path.lastIndexOf(".")+1).toUpperCase()+"WRITER");
     }
 
     public void setFileConfig(FileConfig fileConfig) {

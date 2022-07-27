@@ -49,7 +49,7 @@ abstract public class Reader {
     }
 
     public static boolean isAvailable(String path){
-        return getAvailableReaders().contains(path.substring(path.lastIndexOf(".")+1,path.length()).toUpperCase()+"READER");
+        return getAvailableReaders().contains(path.substring(path.lastIndexOf(".")+1).toUpperCase()+"READER");
     }
 
     public void setFileConfig(FileConfig fileConfig) {
