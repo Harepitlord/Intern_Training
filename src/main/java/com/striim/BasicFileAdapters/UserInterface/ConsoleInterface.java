@@ -2,6 +2,7 @@ package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
+import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.FilterFactory;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
@@ -63,7 +64,7 @@ public class ConsoleInterface extends UserInterface {
     }
 
     public String getStorageType() {
-        System.out.println("Enter the storage type : 1.InMemory DataStore");
+        System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
         while (true) {
             String s = scanner.nextLine().trim();
             if (Integer.parseInt(s) == 1) {
