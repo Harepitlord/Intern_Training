@@ -38,11 +38,16 @@ abstract public class Reader {
         try {
             fileReader = new FileReader(fileConfig.getFilePath());
             state = "File Connected";
+
+            log.info("{} -- {} -- The file has been connected",fileConfig.getType(),fileConfig.getFilePath());
+
             return true;
         } catch (FileNotFoundException e) {
             System.out.println("Error in opening the file");
-            log.error("{} -- {} -- Error in opening the file.", fileConfig.getType(), fileConfig.getFilePath());
             state = "File Not Found";
+
+            log.error("{} -- {} -- Error in opening the file.", fileConfig.getType(), fileConfig.getFilePath());
+
             return false;
         }
     }

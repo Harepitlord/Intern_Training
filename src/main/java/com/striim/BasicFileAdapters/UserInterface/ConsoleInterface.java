@@ -117,10 +117,11 @@ public class ConsoleInterface extends UserInterface {
             if (directory.isDirectory()) {
                 if (type.equals("Writer")) {
                     if(path.contains(".") && Writer.isAvailable(path)) {
-                        f.createNewFile();
-                        fileConfig.setFilePath(path);
-                        setFileType(fileConfig);
-                        break;
+                        if(f.createNewFile()) {
+                            fileConfig.setFilePath(path);
+                            setFileType(fileConfig);
+                            break;
+                        }
                     }
                 }
                 else if(type.equals("Reader") && f.isFile() && Reader.isAvailable(path)){
@@ -206,14 +207,14 @@ public class ConsoleInterface extends UserInterface {
         String colName = "Start";
         while (!colName.equalsIgnoreCase("END")) {
             colName = scanner.nextLine().trim();
-            boolean colfound = false;
+            boolean columnFound = false;
             for (String key : keySet) {
                 if (key.equals(colName) || colName.equalsIgnoreCase("END")) {
-                    colfound = true;
+                    columnFound = true;
                     break;
                 }
             }
-            if (colfound) {
+            if (columnFound) {
                 fetchColumnsSet.add(colName);
             } else {
                 System.out.println("Enter the column name correctly !!!");

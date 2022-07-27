@@ -90,6 +90,7 @@ public class Converter {
     public void addReader(Reader reader) {
         if (!readers.contains(reader)) {
             readers.add(reader);
+
             log.info("{} is added", reader.getName());
         }
     }
@@ -97,7 +98,9 @@ public class Converter {
     public boolean addWriter(Writer writer) {
         if (!writers.contains(writer)) {
             writers.add(writer);
+
             log.info("{} is added", writer.getName());
+
             return true;
         }
         return false;
