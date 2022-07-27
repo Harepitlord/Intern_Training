@@ -68,7 +68,7 @@ public class Converter {
     private void prepareUserInterface() {
         if (userInterface != null)
             return;
-        System.out.println("Enter the choice of input: 1.ConsoleInterface 2.XML Interface");
+        System.out.println("Enter the choice of input: "+UserInterface.getAvailableUserInterfaces());
         while (true) {
             String s = scanner.nextLine().trim();
             switch (Integer.parseInt(s)) {

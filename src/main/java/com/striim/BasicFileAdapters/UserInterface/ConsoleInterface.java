@@ -16,7 +16,7 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 
 @Component("ConsoleInterface")
-public class ConsoleInterface implements UserInterface {
+public class ConsoleInterface extends UserInterface {
 
     private Scanner scanner;
     private ArrayList<FileConfig> readerConfigs;

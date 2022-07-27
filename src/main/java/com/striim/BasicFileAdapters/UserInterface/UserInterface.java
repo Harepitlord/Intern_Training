@@ -6,28 +6,40 @@ import com.striim.BasicFileAdapters.database.DataRecord;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-public interface UserInterface {
+public abstract class UserInterface {
 
-    UserInterface getInterface();
+    private static final ArrayList<String> availableUserInterfaces;
 
-    void prepareReaderFileConfigs();
+    static {
+        availableUserInterfaces=new ArrayList<>();
+        availableUserInterfaces.add("1.Console Interface");
+    }
 
-    void prepareWriterFileConfigs();
+    public static ArrayList<String> getAvailableUserInterfaces(){
+        return availableUserInterfaces;
+    }
 
-    ArrayList<FileConfig> getReaderFileConfigs();
 
-    ArrayList<FileConfig> getWriterFileConfigs();
+    public abstract UserInterface getInterface();
 
-    FileConfig getReaderFileConfig();
+    public abstract void prepareReaderFileConfigs();
 
-    FileConfig getWriterFileConfig();
+    public abstract void prepareWriterFileConfigs();
 
-    Predicate<DataRecord> generateQueries();
+    public abstract ArrayList<FileConfig> getReaderFileConfigs();
 
-    ArrayList<String> fetchColumns(ArrayList<String> keyset);
+    public abstract ArrayList<FileConfig> getWriterFileConfigs();
 
-    String getStorageType();
+    public abstract FileConfig getReaderFileConfig();
 
-    String getClassName();
+    public abstract FileConfig getWriterFileConfig();
+
+    public abstract Predicate<DataRecord> generateQueries();
+
+    public abstract ArrayList<String> fetchColumns(ArrayList<String> keyset);
+
+    public abstract String getStorageType();
+
+    public abstract String getClassName();
 
 }
