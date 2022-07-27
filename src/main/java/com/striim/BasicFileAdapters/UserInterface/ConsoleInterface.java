@@ -171,12 +171,13 @@ public class ConsoleInterface extends UserInterface {
         return temp;
     }
 
-    public Predicate<DataRecord> generateQueries() {
+    public Predicate<DataRecord> generateQueries(ArrayList<String> keySet) {
 
         Predicate<DataRecord> query = null;
 
         System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
         System.out.println("eg : col > val,col < val;");
+        System.out.println("Available Columns are : "+keySet);
         boolean another = true;
         do {
             String input = scanner.nextLine();

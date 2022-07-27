@@ -102,9 +102,9 @@ public class QueryEngine {
     }
 
     public void fetchColumns() {
-        query = userInterface.generateQueries();
         Map<String, String> record = database.getDataObjArray().get(0).getRecord();
         ArrayList<String> keySet = new ArrayList<>(record.keySet());
+        query = userInterface.generateQueries(keySet);
         fetchColumnsSet = userInterface.fetchColumns(keySet);
         if (fetchColumnsSet.size()==1) {
             fetchColumnsSet.remove(0);
