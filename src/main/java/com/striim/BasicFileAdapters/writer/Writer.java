@@ -31,7 +31,6 @@ public abstract class Writer {
     protected boolean prepareWriter() {
         try {
             File file = new File(fileConfig.getFilePath());
-            //boolean newFile = file.createNewFile();
             fileWriter = new FileWriter(file, true);
             state = "File Connected";
             return true;
@@ -39,6 +38,10 @@ public abstract class Writer {
             state = "File Error";
             return false;
         }
+    }
+
+    public static boolean isAvailable(String path){
+        return getAvailableWriters().contains(path.substring(path.lastIndexOf(".")+1,path.length()).toUpperCase()+"WRITER");
     }
 
     public void setFileConfig(FileConfig fileConfig) {
