@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 // This class acts as Java-based imitation of database
 @Component("INMEMORYDATABASE")
-public class InMemoryDatabase implements StorageSpace {
+public class InMemoryDatabase extends StorageSpace {
 
     private final ArrayList<DataRecord> dataObjArray = new ArrayList<>();
 

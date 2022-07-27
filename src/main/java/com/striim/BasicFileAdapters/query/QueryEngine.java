@@ -102,9 +102,9 @@ public class QueryEngine {
     }
 
     public void fetchColumns() {
-        query = userInterface.generateQueries();
         Map<String, String> record = database.getDataObjArray().get(0).getRecord();
         ArrayList<String> keySet = new ArrayList<>(record.keySet());
+        query = userInterface.generateQueries(keySet);
         fetchColumnsSet = userInterface.fetchColumns(keySet);
         if (fetchColumnsSet.size()==1) {
             fetchColumnsSet.remove(0);
@@ -113,6 +113,19 @@ public class QueryEngine {
         else {
             fetchColumnsSet.remove(fetchColumnsSet.size() - 1);
         }
+    }
+
+    public static boolean isProperConstraint(String constraint,ArrayList<String> keySet){
+        String[] temp = constraint.split(" ");
+        return (temp.length==3) && isValidColumn(temp[0],keySet) && isValidOperation(temp[1]);
+    }
+
+    private static boolean isValidColumn(String colName,ArrayList<String> keySet){
+        return keySet.contains(colName);
+    }
+
+    private static boolean isValidOperation(String op){
+        return FilterFactory.getAvailableOperation().contains(op);
     }
 
 }

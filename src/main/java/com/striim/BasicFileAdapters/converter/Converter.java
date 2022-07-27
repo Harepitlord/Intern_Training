@@ -76,10 +76,10 @@ public class Converter {
                     this.userInterface = (UserInterface) context.getBean("ConsoleInterface");
                     return;
                 }
-                case 2: {
-                    this.userInterface = (UserInterface) context.getBean("XMLInterface");
-                    return;
-                }
+//                case 2: {
+//                    this.userInterface = (UserInterface) context.getBean("XMLInterface");
+//                    return;
+//                }
                 default: {
                     System.out.println("Improper choice");
                 }

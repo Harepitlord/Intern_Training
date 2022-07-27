@@ -2,10 +2,22 @@ package com.striim.BasicFileAdapters.database;
 
 import java.util.ArrayList;
 
-public interface StorageSpace {
-    void addDataObjects(ArrayList<DataRecord> data);
+public abstract class  StorageSpace {
 
-    ArrayList<DataRecord> getDataObjArray();
+    private static final ArrayList<String> availableStorageSpaces;
 
-    String getClassName();
+    static {
+        availableStorageSpaces=new ArrayList<>();
+        availableStorageSpaces.add("1.InMemoryStorage");
+    }
+
+    public static ArrayList<String> getAvailableStorageSpaces(){
+        return availableStorageSpaces;
+    }
+
+    public abstract void addDataObjects(ArrayList<DataRecord> data);
+
+    public abstract ArrayList<DataRecord> getDataObjArray();
+
+    public abstract String getClassName();
 }

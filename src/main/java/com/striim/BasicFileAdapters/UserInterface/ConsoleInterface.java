@@ -2,7 +2,9 @@ package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
+import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.FilterFactory;
+import com.striim.BasicFileAdapters.query.QueryEngine;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class ConsoleInterface extends UserInterface {
     }
 
     public String getStorageType() {
-        System.out.println("Enter the storage type : 1.InMemory DataStore");
+        System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
         while (true) {
             String s = scanner.nextLine().trim();
             if (Integer.parseInt(s) == 1) {
@@ -171,12 +173,13 @@ public class ConsoleInterface extends UserInterface {
         return temp;
     }
 
-    public Predicate<DataRecord> generateQueries() {
+    public Predicate<DataRecord> generateQueries(ArrayList<String> keySet) {
 
         Predicate<DataRecord> query = null;
 
         System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
         System.out.println("eg : col > val,col < val;");
+        System.out.println("Available Columns are : "+keySet);
         boolean another = true;
         do {
             String input = scanner.nextLine();
@@ -188,12 +191,20 @@ public class ConsoleInterface extends UserInterface {
             }
             String[] constraints = input.split(",");
             for (String constraint : constraints) {
-                if (query == null)
-                    query = FilterFactory.getFilter(constraint);
-                else {
-                    Predicate<DataRecord> temp = FilterFactory.getFilter(constraint);
-                    if (temp != null)
-                        query = query.and(temp);
+                if(QueryEngine.isProperConstraint(constraint,keySet)) {
+                    if (query == null)
+                        query = FilterFactory.getFilter(constraint);
+                    else {
+                        Predicate<DataRecord> temp = FilterFactory.getFilter(constraint);
+                        if (temp != null)
+                            query = query.and(temp);
+                    }
+                }
+                else{
+                    System.out.println("Enter the constraints properly");
+                    query=null;
+                    another=true;
+                    break;
                 }
             }
         } while (another);

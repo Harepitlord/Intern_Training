@@ -34,7 +34,7 @@ public abstract class UserInterface {
 
     public abstract FileConfig getWriterFileConfig();
 
-    public abstract Predicate<DataRecord> generateQueries();
+    public abstract Predicate<DataRecord> generateQueries(ArrayList<String> keySet);
 
     public abstract ArrayList<String> fetchColumns(ArrayList<String> keyset);
 
