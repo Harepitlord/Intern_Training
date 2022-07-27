@@ -92,6 +92,12 @@ public class ConsoleInterface implements UserInterface {
 
     private boolean filePathInput(FileConfig fileConfig, String type) throws IOException {
         String path;
+        if(type.equals("Reader")){
+            System.out.println("Supported readers are : "+Reader.getAvailableReaders());
+        }
+        else{
+            System.out.println("Supported writers are : "+Writer.getAvailableWriters());
+        }
         System.out.println("Enter the file Path: ");
         boolean next = true;
         while (true) {
