@@ -3,21 +3,19 @@ package com.striim.BasicFileAdapters.reader;
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+@Slf4j
 abstract public class Reader {
 
     protected FileConfig fileConfig;
-
     protected FileReader fileReader;
-
     protected ArrayList<String> headers;
-
     protected UserInterface userInterface;
-
     protected String state;
 
     public Reader() {
@@ -43,6 +41,7 @@ abstract public class Reader {
             return true;
         } catch (FileNotFoundException e) {
             System.out.println("Error in opening the file");
+            log.error("{} -- {} -- Error in opening the file.", fileConfig.getType(), fileConfig.getFilePath());
             state = "File Not Found";
             return false;
         }
@@ -67,6 +66,10 @@ abstract public class Reader {
     abstract protected boolean prepareHeaders();
 
     abstract public ArrayList<DataRecord> readFile();
+
+    public String getName() {
+        return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
+    }
 
     protected abstract void finalize();
 

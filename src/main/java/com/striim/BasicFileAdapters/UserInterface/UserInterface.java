@@ -28,4 +28,6 @@ public interface UserInterface {
 
     String getStorageType();
 
+    String getClassName();
+
 }

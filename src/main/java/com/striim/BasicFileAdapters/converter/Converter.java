@@ -4,6 +4,7 @@ import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component("converter")
 public class Converter {
 
@@ -29,8 +31,8 @@ public class Converter {
     private ExecutorService executorService;
 
 
-
     public Converter() {
+        log.info("The converter pipeline is created.");
         this.readers = new ArrayList<>();
         this.writers = new ArrayList<>();
     }
@@ -40,14 +42,18 @@ public class Converter {
         this.context = context;
 
         prepareUserInterface();
+        log.info("UserInterface selected : {}", userInterface.getClassName());
 
         this.storage = (StorageSpace) context.getBean(userInterface.getStorageType());
+        log.info("Storage Space : {}", storage.getClassName());
 
         addReaders();
+        log.info("No. of Readers added : {}", readers.size());
 
         readFiles(executorService);
 
         writers();
+        log.info("No. of Writers added : {}", writers.size());
 
         executorService.shutdown();
 
@@ -55,7 +61,13 @@ public class Converter {
 
     }
 
+    public void setUserInterface(UserInterface userInterface) {
+        this.userInterface = userInterface;
+    }
+
     private void prepareUserInterface() {
+        if (userInterface != null)
+            return;
         System.out.println("Enter the choice of input: 1.ConsoleInterface 2.XML Interface");
         while (true) {
             String s = scanner.nextLine().trim();
@@ -78,12 +90,14 @@ public class Converter {
     public void addReader(Reader reader) {
         if (!readers.contains(reader)) {
             readers.add(reader);
+            log.info("{} is added", reader.getName());
         }
     }
 
     public boolean addWriter(Writer writer) {
         if (!writers.contains(writer)) {
             writers.add(writer);
+            log.info("{} is added", writer.getName());
             return true;
         }
         return false;

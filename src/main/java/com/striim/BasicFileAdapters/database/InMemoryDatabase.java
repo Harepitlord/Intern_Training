@@ -1,6 +1,5 @@
 package com.striim.BasicFileAdapters.database;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,15 +10,22 @@ public class InMemoryDatabase implements StorageSpace {
 
     private final ArrayList<DataRecord> dataObjArray = new ArrayList<>();
 
+    @Override
     public ArrayList<DataRecord> getDataObjArray() {
         return dataObjArray;
     }
 
+    @Override
     public void addDataObjects(ArrayList<DataRecord> data) {
         this.dataObjArray.addAll(data);
     }
 
     public int size() {
         return dataObjArray.size();
+    }
+
+    @Override
+    public String getClassName() {
+        return "InMemoryDatabase";
     }
 }

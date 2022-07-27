@@ -75,6 +75,11 @@ public class ConsoleInterface implements UserInterface {
     }
 
     @Override
+    public String getClassName() {
+        return "ConsoleInterface";
+    }
+
+    @Override
     public FileConfig getWriterFileConfig() {
         return getFileConfig("Writer");
     }

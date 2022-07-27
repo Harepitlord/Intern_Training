@@ -40,15 +40,17 @@ public abstract class Writer {
         }
     }
 
-    public static boolean isAvailable(String path){
-        return getAvailableWriters().contains(path.substring(path.lastIndexOf(".")+1).toUpperCase()+"WRITER");
+    public static boolean isAvailable(String path) {
+        return getAvailableWriters().contains(path.substring(path.lastIndexOf(".") + 1).toUpperCase() + "WRITER");
     }
 
     public void setFileConfig(FileConfig fileConfig) {
         this.fileConfig = fileConfig;
     }
 
-    public abstract String getName();
+    public String getName() {
+        return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
+    }
 
     public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
 
