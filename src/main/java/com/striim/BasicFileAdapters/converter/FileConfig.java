@@ -1,8 +1,5 @@
 package com.striim.BasicFileAdapters.converter;
 
-import org.springframework.stereotype.Component;
-
-
 public class FileConfig {
 
     protected String filePath;

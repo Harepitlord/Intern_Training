@@ -3,6 +3,7 @@ package com.striim.BasicFileAdapters.writer;
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.StorageSpace;
+import lombok.extern.slf4j.XSlf4j;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
+@XSlf4j(topic = "General")
 public abstract class Writer {
 
     protected FileWriter fileWriter;
@@ -35,9 +37,20 @@ public abstract class Writer {
             state = "File Connected";
             return true;
         } catch (IOException ex) {
-            state = "File Error";
+            state = "File Not Found";
             return false;
         }
+    }
+
+    protected void errorHandling() {
+        switch (state) {
+            case "File Not Found":
+                System.out.println("There is no such file in the given path, Re-enter new File Path");
+
+                log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
+                break;
+        }
+        fileConfig = userInterface.getWriterFileConfig();
     }
 
     public static boolean isAvailable(String path) {

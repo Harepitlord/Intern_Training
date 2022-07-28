@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class FilterFactory {
 
-    private static ArrayList<String> op;
+    private static final ArrayList<String> op;
 
     static {
         op=new ArrayList<>();

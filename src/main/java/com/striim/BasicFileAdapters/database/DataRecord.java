@@ -3,35 +3,31 @@ package com.striim.BasicFileAdapters.database;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// This class acts as an wrapper class to wrap a record of data with respective headers.
+// This class acts as a wrapper class to wrap a record of data with respective headers.
 public class DataRecord {
 
-    HashMap<String,String> record;
+    HashMap<String, String> records;
 
     public DataRecord() {
-        record = new HashMap<>();
+        records = new HashMap<>();
     }
 
     public DataRecord(ArrayList<String> headers, String[] dat) {
-        this.record = new HashMap<>();
-        for(int i = 0;i<dat.length;i++)
-            this.record.put(headers.get(i),dat[i]);
+        this.records = new HashMap<>();
+        for (int i = 0; i < dat.length; i++)
+            this.records.put(headers.get(i), dat[i]);
     }
 
-    public HashMap<String,String> getRecord(){
-        return record;
-    }
-
-    public void setRecord(HashMap<String, String> record) {
-        this.record = record;
+    public HashMap<String, String> getRecords() {
+        return records;
     }
 
     public String get(String key) {
-        return record.getOrDefault(key,null);
+        return records.getOrDefault(key, null);
     }
 
-    public void put(String key,String value) {
-        record.put(key, value);
+    public void put(String key, String value) {
+        records.put(key, value);
     }
 
     public DataRecord fetchColumn(ArrayList<String> fetchColumns) {

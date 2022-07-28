@@ -5,6 +5,7 @@ import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.QueryEngine;
+import lombok.extern.slf4j.XSlf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
+@XSlf4j(topic = "General")
 @Component("JSONWRITER")
 public class JsonWriter extends Writer {
 
@@ -31,7 +33,8 @@ public class JsonWriter extends Writer {
 
     public void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService) {
         if (!prepareWriter()) {
-            return;
+            errorHandling();
+            writeFile(userInterface, database, executorService);
         }
         this.userInterface = userInterface;
         QueryEngine queryEngine = new QueryEngine(userInterface, database);
@@ -58,7 +61,7 @@ public class JsonWriter extends Writer {
     JSONArray toJson(ArrayList<DataRecord> toWriteResultSet){
         JSONArray arrayObj=new JSONArray();
         for (DataRecord dataRecord : toWriteResultSet) {
-            JSONObject jsonObj = new JSONObject(dataRecord.getRecord());
+            JSONObject jsonObj = new JSONObject(dataRecord.getRecords());
             arrayObj.put(jsonObj);
         }
         return arrayObj;

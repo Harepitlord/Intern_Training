@@ -3,13 +3,13 @@ package com.striim.BasicFileAdapters.reader;
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-@Slf4j
+@XSlf4j(topic = "General")
 abstract public class Reader {
 
     protected FileConfig fileConfig;
@@ -52,8 +52,32 @@ abstract public class Reader {
         }
     }
 
-    public static boolean isAvailable(String path){
-        return getAvailableReaders().contains(path.substring(path.lastIndexOf(".")+1).toUpperCase()+"READER");
+    public static boolean isAvailable(String path) {
+        return getAvailableReaders().contains(path.substring(path.lastIndexOf(".") + 1).toUpperCase() + "READER");
+    }
+
+    protected void errorHandling() {
+        switch (state) {
+            case "File Not Found":
+                System.out.println("There is no such file in the given path, Re-enter new File Path");
+
+                log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
+                break;
+
+            case "Data Not Found":
+                System.out.println("The given file doesn't contain a record");
+                this.fileReader = null;
+
+                log.warn("{} -- {} -- The file is empty", fileConfig.getType(), fileConfig.getFilePath());
+                break;
+
+            case "Read Error":
+                System.out.println("The given file not readable, provide filepath for the new file");
+                this.fileReader = null;
+
+                log.warn("{} -- {} -- Unable to access the file. ", fileConfig.getType(), fileConfig.getFilePath());
+                break;
+        }
     }
 
     public void setFileConfig(FileConfig fileConfig) {

@@ -4,7 +4,7 @@ import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-@Slf4j
+@XSlf4j(topic = "general")
 @Component("converter")
 public class Converter {
 
@@ -32,12 +32,12 @@ public class Converter {
 
 
     public Converter() {
-        log.info("The converter pipeline is created.");
         this.readers = new ArrayList<>();
         this.writers = new ArrayList<>();
     }
 
     public void runApp(ApplicationContext context) {
+        log.info("The converter pipeline is created.");
 
         this.context = context;
 
@@ -129,7 +129,7 @@ public class Converter {
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> storage.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();
-        System.out.print("Files are being read .");
+        System.out.println("Files are being read .");
         while(loop) {
             loop = !futures.stream().allMatch(Future::isDone);
         }

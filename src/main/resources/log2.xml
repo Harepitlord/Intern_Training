@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="FILE_LOG_PATTERN">
+            "%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger - %msg%n"
+        </Property>
+        <Property name="CONSOLE_LOG_PATTERN">
+            "%d{HH:mm:ss} [%t] %-5level %logger - %msg%n"
+        </Property>
+        <Property name="LOG_DIR">
+            /Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/BasicFileAdapters/Logs
+        </Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="RollingFileAppender" filename="${LOG_DIR}/Log.log" filepattern="${LOG_DIR}/log_%i.log">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 KB"/>
+            </Policies>
+        </RollingFile>
+
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="RollingFile" level="INFO" additivity="false">
+            <AppenderRef ref="RollingFileAppender"/>
+        </Logger>
+        <Logger name="Console" level="TRACE" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="General" level="Warn" additivity="false">
+            <AppenderRef ref="RollingFileAppender"/>
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Root level="WARN">
+            <AppenderRef ref="RollingFileAppender"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
