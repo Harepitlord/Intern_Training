@@ -180,6 +180,7 @@ public class ConsoleInterface extends UserInterface {
         System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
         System.out.println("eg : col > val,col < val;");
         System.out.println("Available Columns are : "+keySet);
+        System.out.println("Supported operations are : "+FilterFactory.getAvailableOperation());
         boolean another = true;
         do {
             String input = scanner.nextLine();

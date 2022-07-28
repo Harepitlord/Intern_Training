@@ -51,8 +51,6 @@ public class JsonWriter extends Writer {
                 ex.printStackTrace();
             }
         });
-
-
     }
 
     JSONArray toJson(ArrayList<DataRecord> toWriteResultSet){
