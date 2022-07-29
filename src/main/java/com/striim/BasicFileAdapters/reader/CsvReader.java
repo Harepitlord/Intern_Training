@@ -6,6 +6,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
+import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -135,6 +136,12 @@ public class CsvReader extends Reader {
             errorHandling();
             return readFile();
         }
+    }
+
+    @Override
+    public void setFileConfig(FileConfig fileConfig) {
+        super.setFileConfig(fileConfig);
+        delimiter = fileConfig.getDelimiter().charAt(0);
     }
 
     protected void finalize() {
