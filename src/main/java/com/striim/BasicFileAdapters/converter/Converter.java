@@ -58,11 +58,8 @@ public class Converter {
         executorService.shutdown();
 
         System.out.println("Executor has been shutdown");
+        log.info("The Executor has been Shutdown\n\n");
 
-    }
-
-    public void setUserInterface(UserInterface userInterface) {
-        this.userInterface = userInterface;
     }
 
     private void prepareUserInterface() {
@@ -76,10 +73,10 @@ public class Converter {
                     this.userInterface = (UserInterface) context.getBean("ConsoleInterface");
                     return;
                 }
-//                case 2: {
-//                    this.userInterface = (UserInterface) context.getBean("XMLInterface");
-//                    return;
-//                }
+                case 2: {
+                    this.userInterface = (UserInterface) context.getBean("XMLInterface");
+                    return;
+                }
                 default: {
                     System.out.println("Improper choice");
                 }
@@ -88,16 +85,16 @@ public class Converter {
     }
 
     public void addReader(Reader reader) {
-        if (!readers.contains(reader)) {
-            readers.add(reader);
+        if (readers.stream().noneMatch(e -> e.getFilePath().equals(reader.getFilePath()))) {
+            boolean a = readers.add(reader);
 
             log.info("{} is added", reader.getName());
         }
     }
 
     public boolean addWriter(Writer writer) {
-        if (!writers.contains(writer)) {
-            writers.add(writer);
+        if (writers.stream().noneMatch(e -> e.getFilePath().equals(writer.getFilePath()))) {
+            boolean a = writers.add(writer);
 
             log.info("{} is added", writer.getName());
 
@@ -133,7 +130,7 @@ public class Converter {
         while(loop) {
             loop = !futures.stream().allMatch(Future::isDone);
         }
-        System.out.println("File reading completed : time taken -> "+(System.nanoTime()-start));
+        System.out.println("File reading completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms");
     }
 
 }

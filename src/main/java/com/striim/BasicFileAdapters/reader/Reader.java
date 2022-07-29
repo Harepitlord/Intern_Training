@@ -84,20 +84,16 @@ abstract public class Reader {
         this.fileConfig = fileConfig;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public ArrayList<String> getHeaders() {
-        return headers;
-    }
-
     abstract protected boolean prepareHeaders();
 
     abstract public ArrayList<DataRecord> readFile();
 
     public String getName() {
         return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
+    }
+
+    public String getFilePath() {
+        return fileConfig.getFilePath();
     }
 
     protected abstract void finalize();

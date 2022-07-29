@@ -7,6 +7,7 @@ import com.striim.BasicFileAdapters.query.FilterFactory;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
+@XSlf4j
 @Component("ConsoleInterface")
 public class ConsoleInterface extends UserInterface {
 
@@ -97,40 +100,54 @@ public class ConsoleInterface extends UserInterface {
         }
     }
 
-    private boolean filePathInput(FileConfig fileConfig, String type) throws IOException {
-        String path;
-        if(type.equals("Reader")){
-            System.out.println("Supported readers are : "+Reader.getAvailableReaders());
-        }
-        else{
-            System.out.println("Supported writers are : "+Writer.getAvailableWriters());
+    private boolean filePathInput(FileConfig fileConfig, String type) {
+        String path = "";
+        if (type.equals("Reader")) {
+            System.out.println("Supported readers are : " + Reader.getAvailableReaders());
+        } else {
+            System.out.println("Supported writers are : " + Writer.getAvailableWriters());
         }
         System.out.println("Enter the file Path: ");
         boolean next = true;
         while (true) {
-            path = scanner.nextLine().trim();
-            if (path.length() == 0 || path.endsWith(";")) {
-                next = false;
-                path = path.substring(0, path.length() - 1);
-            }
-            File f = new File(path);
-            String dir=path.substring(0,path.lastIndexOf("/")+1);
-            File directory=new File(dir);
-            if (directory.isDirectory()) {
-                if (type.equals("Writer")) {
-                    if(path.contains(".") && Writer.isAvailable(path)) {
-                        if(f.createNewFile()) {
-                            fileConfig.setFilePath(path);
-                            setFileType(fileConfig);
-                            break;
+            try {
+                path = scanner.nextLine().trim();
+                if (path.length() == 0 || path.equals(";"))
+                    if ((type.equals("Reader") && readerConfigs.size() > 0) || (type.equals("Writer") && writerConfigs.size() > 0))
+                        break;
+                    else
+                        throw new NoSuchElementException("Empty Input line");
+                if (path.endsWith(";")) {
+                    next = false;
+                    path = path.substring(0, path.length() - 1);
+                }
+                File f = new File(path);
+                String dir = path.substring(0, path.lastIndexOf("/") + 1);
+                File directory = new File(dir);
+                if (directory.isDirectory()) {
+                    if (type.equals("Writer")) {
+                        if (path.contains(".") && Writer.isAvailable(path)) {
+                            if (f.createNewFile()) {
+                                fileConfig.setFilePath(path);
+                                setFileType(fileConfig);
+                                break;
+                            }
                         }
+                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path)) {
+                        fileConfig.setFilePath(path);
+                        setFileType(fileConfig);
+                        break;
                     }
                 }
-                else if(type.equals("Reader") && f.isFile() && Reader.isAvailable(path)){
-                    fileConfig.setFilePath(path);
-                    setFileType(fileConfig);
-                    break;
-                }
+            } catch (NoSuchElementException e) {
+                System.out.println("No path entered");
+            } catch (IllegalStateException e) {
+                System.out.println("Scanner closed");
+                log.error("Scanner closed");
+                return false;
+            } catch (IOException e) {
+                System.out.println("File Error");
+                log.warn("Error in opening the file -- {}", path);
             }
             System.out.println("Enter proper file path: ");
         }
@@ -145,12 +162,11 @@ public class ConsoleInterface extends UserInterface {
 
     private FileConfig getFileConfig(String type) {
         FileConfig fileConfig = new FileConfig();
-        try {
-            filePathInput(fileConfig, type);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        filePathInput(fileConfig, type);
+
         fileConfig.setType(fileConfig.getFileType() + type);
+
         return fileConfig;
     }
 
@@ -161,11 +177,8 @@ public class ConsoleInterface extends UserInterface {
         while (next) {
             FileConfig fileConfig = new FileConfig();
 
-            try {
-                next = filePathInput(fileConfig, type);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            next = filePathInput(fileConfig, type);
+
             fileConfig.setType(fileConfig.getFileType() + type);
 
             temp.add(fileConfig);
@@ -184,12 +197,15 @@ public class ConsoleInterface extends UserInterface {
         boolean another = true;
         do {
             String input = scanner.nextLine();
+
             if (input.length() == 0 || input.equals(";"))
                 return null;
+
             if (input.endsWith(";")) {
                 another = false;
                 input = input.substring(0, input.length() - 1);
             }
+
             String[] constraints = input.split(",");
             for (String constraint : constraints) {
                 if(QueryEngine.isProperConstraint(constraint,keySet)) {
@@ -200,8 +216,7 @@ public class ConsoleInterface extends UserInterface {
                         if (temp != null)
                             query = query.and(temp);
                     }
-                }
-                else{
+                } else{
                     System.out.println("Enter the constraints properly");
                     query=null;
                     another=true;

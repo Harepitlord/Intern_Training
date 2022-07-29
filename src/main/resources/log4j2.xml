@@ -19,7 +19,7 @@
         <RollingFile name="RollingFileApp" fileName="${LOG_DIR}/Log.log" filePattern="${LOG_DIR}/log_%i.log">
             <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="100 KB"/>
+                <SizeBasedTriggeringPolicy size="10 KB"/>
             </Policies>
         </RollingFile>
         >

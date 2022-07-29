@@ -8,6 +8,8 @@ import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import lombok.extern.slf4j.XSlf4j;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.List;
 // converter interface
 @XSlf4j(topic = "General")
 @Component("CSVREADER")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CsvReader extends Reader {
 
     private CSVReader reader;

@@ -43,18 +43,20 @@ public abstract class Writer {
     }
 
     protected void errorHandling() {
-        switch (state) {
-            case "File Not Found":
-                System.out.println("There is no such file in the given path, Re-enter new File Path");
+        if ("File Not Found".equals(state)) {
+            System.out.println("There is no such file in the given path, Re-enter new File Path");
 
-                log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
-                break;
+            log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
         }
         fileConfig = userInterface.getWriterFileConfig();
     }
 
     public static boolean isAvailable(String path) {
         return getAvailableWriters().contains(path.substring(path.lastIndexOf(".") + 1).toUpperCase() + "WRITER");
+    }
+
+    public String getFilePath() {
+        return fileConfig.getFilePath();
     }
 
     public void setFileConfig(FileConfig fileConfig) {
@@ -66,7 +68,5 @@ public abstract class Writer {
     }
 
     public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
-
-    public abstract Writer getInstance(FileConfig fileConfig);
 
 }

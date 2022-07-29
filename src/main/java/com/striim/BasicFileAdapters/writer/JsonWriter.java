@@ -1,13 +1,14 @@
 package com.striim.BasicFileAdapters.writer;
 
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
-import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import lombok.extern.slf4j.XSlf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,19 +16,11 @@ import java.util.concurrent.ExecutorService;
 
 @XSlf4j(topic = "General")
 @Component("JSONWRITER")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class JsonWriter extends Writer {
 
     public JsonWriter() {
         state = "Initiated";
-    }
-
-    public Writer getInstance(FileConfig fileConfig) {
-        Writer writer = new JsonWriter();
-        writer.setFileConfig(fileConfig);
-        if (writer.prepareWriter())
-            return writer;
-        else
-            return null;
     }
 
 
