@@ -1,81 +1,68 @@
 package com.striim.BasicFileAdapters.reader;
 
-import com.striim.BasicFileAdapters.database.*;
-import com.opencsv.*;
-import com.opencsv.exceptions.*;
-import java.io.*;
-import java.util.*;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
+import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.database.DataRecord;
+import lombok.extern.slf4j.XSlf4j;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 // This class will be used to read data from the csv file and parse it into dataObjects and returns those to
 // converter interface
+@XSlf4j(topic = "General")
+@Component("CSVREADER")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CsvReader extends Reader {
 
     private CSVReader reader;
     private char delimiter;
 
-    public CsvReader(String filePath) {
-        this.filePath = filePath;
+    public CsvReader() {
         delimiter = ',';
     }
 
-    public Reader getInstance(String filePath) {
-        return new CsvReader(filePath);
-    }
+    protected void errorHandling() {
 
-    private void getFilePath() {
-        System.out.println("Enter proper File path for the csv file: ");
-        String temp = scanner.nextLine();
-        if(temp.length()>0)
-            this.filePath = temp;
-        else
-            getFilePath();
-    }
-
-    private ArrayList<DataRecord> errorHandling() {
+        super.errorHandling();
         switch (state) {
-            case "File Not Found":
-                System.out.println("There is no such file in the given path, Re-enter new File Path");
-                break;
-
-            case "Data Not Found":
-                System.out.println("The given csv file doesn't contain a record");
-                this.fileReader = null;
-                break;
 
             case "Only Headers":
                 System.out.println("The given csv file contains only Headers");
                 this.fileReader = null;
                 this.headers = null;
+
+                log.warn("{} -- {} -- The file contains only headers", fileConfig.getType(), fileConfig.getFilePath());
                 break;
 
-            case "Read Error":
-                System.out.println("The given file not readable, provide filepath for the new file");
-                this.fileReader = null;
-                break;
 
             case "CSV Error":
                 System.out.println("The given is in improper format, provide filepath for new file");
                 this.fileReader = null;
+
+                log.warn("{} -- {} -- The data is not in csv format",fileConfig.getType(),fileConfig.getFilePath());
                 break;
 
             default: {
                 state = "Improper state";
                 System.out.println("State failure");
-                return null;
+
+                log.error("{} -- {} -- The Reader is corrupted",fileConfig.getType(),fileConfig.getFilePath());
             }
         }
-        getFilePath();
-        return readFile();
-    }
+        log.info("{} -- {} -- Getting new File configuration",fileConfig.getType(),fileConfig.getFilePath());
 
-    @Override
-    public void initiate(Scanner sc) {
-        scanner = sc;
-        System.out.print("Enter the delimiter for the data in csv (Leave blank for ','): ");
-        String temp = scanner.nextLine();
-        if(temp.length()>1) {
-            delimiter = temp.charAt(0);
-        }
+        fileConfig = userInterface.getReaderFileConfig();
     }
 
     protected boolean prepareHeaders() {
@@ -106,17 +93,24 @@ public class CsvReader extends Reader {
 
     public ArrayList<DataRecord> readFile() {
         try {
-            if (!this.prepareReader(filePath))
-                return errorHandling();
+            if (!this.prepareReader(fileConfig)) {
+                errorHandling();
+                return readFile();
+            }
 
-            if(headers == null)
-                if (!this.prepareHeaders())
-                    return errorHandling();
+            delimiter = fileConfig.getDelimiter().charAt(0);
+
+            if (headers == null)
+                if (!this.prepareHeaders()) {
+                    errorHandling();
+                    return readFile();
+                }
 
             List<String[]> arr = reader.readAll();
-            if(arr.size()==0) {
+            if (arr.size() == 0) {
                 state = "Only Headers";
-                return errorHandling();
+                errorHandling();
+                return readFile();
             }
 
             ArrayList<DataRecord> dataRecords = new ArrayList<>();
@@ -125,17 +119,29 @@ public class CsvReader extends Reader {
 
             state = "Success";
             this.fileReader.close();
+
+            log.info("{} -- {} -- The file has been successfully read and parsed",fileConfig.getType(),fileConfig.getFilePath());
+            log.info("{} -- {} -- Records read : {}",fileConfig.getType(),fileConfig.getFilePath(),dataRecords.size());
             return dataRecords;
 
         } catch (IOException e) {
             System.out.println("Reader failed to read the contents of the file");
             state = "Read Error";
-            return null;
+            errorHandling();
+            return readFile();
+
         } catch (CsvException e) {
             System.out.println("Error in parsing the csv");
             state = "CSV Error";
-            return null;
+            errorHandling();
+            return readFile();
         }
+    }
+
+    @Override
+    public void setFileConfig(FileConfig fileConfig) {
+        super.setFileConfig(fileConfig);
+        delimiter = fileConfig.getDelimiter().charAt(0);
     }
 
     protected void finalize() {

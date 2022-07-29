@@ -1,9 +1,24 @@
 package com.striim.BasicFileAdapters.query;
 
 import com.striim.BasicFileAdapters.database.DataRecord;
+
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class FilterFactory {
+
+    private static final ArrayList<String> op;
+
+    static {
+        op=new ArrayList<>();
+        op.add(">");
+        op.add("=");
+        op.add("<");
+    }
+
+    public static ArrayList<String> getAvailableOperation(){
+        return op;
+    }
 
     public static Predicate<DataRecord> getFilter(String coloumnName, String operation, String referenceValue) {
         switch (operation) {
