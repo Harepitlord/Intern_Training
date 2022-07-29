@@ -26,6 +26,7 @@ public class ConsoleInterface extends UserInterface {
     private Scanner scanner;
     private ArrayList<FileConfig> readerConfigs;
     private ArrayList<FileConfig> writerConfigs;
+    private ArrayList<FileConfig> temp;
 
     @Autowired
     public void setScanner(Scanner scanner) {
@@ -107,7 +108,7 @@ public class ConsoleInterface extends UserInterface {
         }
     }
 
-    private boolean filePathInput(FileConfig fileConfig, String type) {
+    private int filePathInput(FileConfig fileConfig, String type) {
         String path = "";
         if (type.equals("Reader")) {
             System.out.println("Supported readers are : " + Reader.getAvailableReaders());
@@ -115,17 +116,18 @@ public class ConsoleInterface extends UserInterface {
             System.out.println("Supported writers are : " + Writer.getAvailableWriters());
         }
         System.out.println("Enter the file Path: ");
-        boolean next = true;
+        int next = 1;
         while (true) {
             try {
                 path = scanner.nextLine().trim();
-                if (path.length() == 0 || path.equals(";"))
-                    if ((type.equals("Reader") && readerConfigs.size() > 0) || (type.equals("Writer") && writerConfigs.size() > 0))
-                        break;
+                if (path.length() == 0 || path.equals(";")) {
+                    if (temp.size() > 0)
+                        return 0;
                     else
                         throw new NoSuchElementException("Empty Input line");
+                }
                 if (path.endsWith(";")) {
-                    next = false;
+                    next = -1;
                     path = path.substring(0, path.length() - 1);
                 }
                 File f = new File(path);
@@ -147,11 +149,12 @@ public class ConsoleInterface extends UserInterface {
                     }
                 }
             } catch (NoSuchElementException e) {
-                System.out.println("No path entered");
+                System.out.println("No path entered" + e.getMessage());
+
             } catch (IllegalStateException e) {
                 System.out.println("Scanner closed");
                 log.error("Scanner closed");
-                return false;
+                return -1;
             } catch (IOException e) {
                 System.out.println("File Error");
                 log.warn("Error in opening the file -- {}", path);
@@ -178,17 +181,19 @@ public class ConsoleInterface extends UserInterface {
     }
 
     private ArrayList<FileConfig> prepareFileConfigs(String type) {
-        boolean next = true;
-        ArrayList<FileConfig> temp = new ArrayList<>();
+        int next = 1;
+        temp = new ArrayList<>();
         System.out.printf("Enter the details of the %s : End with ';' to end the input \n", type);
-        while (next) {
+        while (next == 1) {
             FileConfig fileConfig = new FileConfig();
 
             next = filePathInput(fileConfig, type);
 
-            fileConfig.setType(fileConfig.getFileType() + type);
+            if (next != 0) {
+                fileConfig.setType(fileConfig.getFileType() + type);
 
-            temp.add(fileConfig);
+                temp.add(fileConfig);
+            }
         }
         return temp;
     }

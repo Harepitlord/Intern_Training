@@ -9,7 +9,7 @@
             %logger %msg%n%throwable
         </Property>
         <Property name="LOG_DIR">
-            /Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java
+            com/striim/BasicFileAdapters/Logs
         </Property>
     </Properties>
     <Appenders>
