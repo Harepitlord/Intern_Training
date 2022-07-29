@@ -68,7 +68,15 @@ public class Converter {
         System.out.println("Enter the choice of input: "+UserInterface.getAvailableUserInterfaces());
         while (true) {
             String s = scanner.nextLine().trim();
-            switch (Integer.parseInt(s)) {
+            int choice;
+            try{
+                choice=Integer.parseInt(s);
+            }
+            catch(Exception ex){
+                System.out.println("Improper choice");
+                continue;
+            }
+            switch (choice) {
                 case 1: {
                     this.userInterface = (UserInterface) context.getBean("ConsoleInterface");
                     return;
