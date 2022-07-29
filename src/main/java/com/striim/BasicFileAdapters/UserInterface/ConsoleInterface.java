@@ -100,9 +100,9 @@ public class ConsoleInterface extends UserInterface {
         if (fileConfig.getFileType().equals("CSV")) {
             System.out.println("Enter the delimiter : (default => ',')");
             char delim = ',';
-            String val = scanner.nextLine();
-            if (val.length() > 1)
-                delim = val.trim().charAt(0);
+            String val = scanner.nextLine().trim();
+            if (val.length() >= 1)
+                delim = val.charAt(0);
             fileConfig.setDelimiter(String.valueOf(delim));
         }
     }
