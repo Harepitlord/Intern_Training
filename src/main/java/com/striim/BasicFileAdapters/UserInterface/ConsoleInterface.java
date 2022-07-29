@@ -71,7 +71,14 @@ public class ConsoleInterface extends UserInterface {
         System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
         while (true) {
             String s = scanner.nextLine().trim();
-            if (Integer.parseInt(s) == 1) {
+            int choice;
+            try {
+                choice = Integer.parseInt(s);
+            } catch (Exception ex) {
+                System.out.println("Improper choice");
+                continue;
+            }
+            if (choice == 1) {
                 return "INMEMORYDATABASE";
             } else {
                 System.out.println("Improper choice");
