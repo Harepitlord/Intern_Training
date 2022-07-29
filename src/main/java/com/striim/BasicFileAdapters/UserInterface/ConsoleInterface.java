@@ -7,6 +7,7 @@ import com.striim.BasicFileAdapters.query.FilterFactory;
 import com.striim.BasicFileAdapters.query.QueryEngine;
 import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -68,7 +69,15 @@ public class ConsoleInterface extends UserInterface {
         System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
         while (true) {
             String s = scanner.nextLine().trim();
-            if (Integer.parseInt(s) == 1) {
+            int choice;
+            try{
+                choice=Integer.parseInt(s);
+            }
+            catch(Exception ex){
+                System.out.println("Improper choice");
+                continue;
+            }
+            if (choice == 1) {
                 return "INMEMORYDATABASE";
             } else {
                 System.out.println("Improper choice");
