@@ -44,7 +44,7 @@ public abstract class Writer {
 
     protected void errorHandling() {
         if ("File Not Found".equals(state)) {
-            System.out.println("There is no such file in the given path, Re-enter new File Path");
+            userInterface.print("There is no such file in the given path, Re-enter new File Path");
 
             log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
         }
@@ -66,6 +66,7 @@ public abstract class Writer {
     public String getName() {
         return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
     }
+
 
     public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
 
