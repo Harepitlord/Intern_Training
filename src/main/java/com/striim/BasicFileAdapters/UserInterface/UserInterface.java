@@ -20,8 +20,6 @@ public abstract class UserInterface {
     }
 
 
-    public abstract UserInterface getInterface();
-
     public abstract void prepareReaderFileConfigs();
 
     public abstract void prepareWriterFileConfigs();
