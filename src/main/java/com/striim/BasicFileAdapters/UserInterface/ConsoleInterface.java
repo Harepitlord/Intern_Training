@@ -9,7 +9,6 @@ import com.striim.BasicFileAdapters.reader.Reader;
 import com.striim.BasicFileAdapters.writer.Writer;
 import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -31,12 +30,6 @@ public class ConsoleInterface extends UserInterface {
     @Autowired
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
-    }
-
-    @Bean
-    @Override
-    public UserInterface getInterface() {
-        return new ConsoleInterface();
     }
 
     @Override
@@ -71,12 +64,15 @@ public class ConsoleInterface extends UserInterface {
     public String getStorageType() {
         System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
         while (true) {
-            String s = scanner.nextLine().trim();
             int choice;
             try {
+                String s = scanner.nextLine().trim();
                 choice = Integer.parseInt(s);
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 System.out.println("Improper choice");
+                continue;
+            } catch (NoSuchElementException e) {
+                System.out.println("No choice entered");
                 continue;
             }
             if (choice == 1) {
@@ -95,6 +91,11 @@ public class ConsoleInterface extends UserInterface {
     @Override
     public FileConfig getWriterFileConfig() {
         return getFileConfig("Writer");
+    }
+
+    @Override
+    public void print(String msg) {
+        System.out.println(msg);
     }
 
     public void fileSpecificConfig(FileConfig fileConfig) {

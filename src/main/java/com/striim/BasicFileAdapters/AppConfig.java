@@ -11,12 +11,12 @@ import java.util.concurrent.Executors;
 @Configuration
 public class AppConfig {
 
-    private Scanner scanner;
+    private static Scanner scanner;
     private Converter converter;
     private ExecutorService executorService;
 
     @Bean("Scanner")
-    public Scanner getScanner() {
+    public static Scanner getScanner() {
         if (scanner == null)
             scanner = new Scanner(System.in);
 

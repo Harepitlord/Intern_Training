@@ -67,7 +67,6 @@ public abstract class Writer {
         return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
     }
 
-
     public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
 
 }

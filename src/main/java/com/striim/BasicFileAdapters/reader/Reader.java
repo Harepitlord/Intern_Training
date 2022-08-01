@@ -43,7 +43,7 @@ abstract public class Reader {
 
             return true;
         } catch (FileNotFoundException e) {
-            System.out.println("Error in opening the file");
+            userInterface.print("Error in opening the file");
             state = "File Not Found";
 
             log.error("{} -- {} -- Error in opening the file.", fileConfig.getType(), fileConfig.getFilePath());
@@ -59,20 +59,20 @@ abstract public class Reader {
     protected void errorHandling() {
         switch (state) {
             case "File Not Found":
-                System.out.println("There is no such file in the given path, Re-enter new File Path");
+                userInterface.print("There is no such file in the given path, Re-enter new File Path");
 
                 log.warn("{} -- {} -- The file is not found", fileConfig.getType(), fileConfig.getFilePath());
                 break;
 
             case "Data Not Found":
-                System.out.println("The given file doesn't contain a record");
+                userInterface.print("The given file doesn't contain a record");
                 this.fileReader = null;
 
                 log.warn("{} -- {} -- The file is empty", fileConfig.getType(), fileConfig.getFilePath());
                 break;
 
             case "Read Error":
-                System.out.println("The given file not readable, provide filepath for the new file");
+                userInterface.print("The given file not readable, provide filepath for the new file");
                 this.fileReader = null;
 
                 log.warn("{} -- {} -- Unable to access the file. ", fileConfig.getType(), fileConfig.getFilePath());

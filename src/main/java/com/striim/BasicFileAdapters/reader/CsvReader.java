@@ -38,7 +38,7 @@ public class CsvReader extends Reader {
         switch (state) {
 
             case "Only Headers":
-                System.out.println("The given csv file contains only Headers");
+                userInterface.print("The given csv file contains only Headers");
                 this.fileReader = null;
                 this.headers = null;
 
@@ -47,7 +47,7 @@ public class CsvReader extends Reader {
 
 
             case "CSV Error":
-                System.out.println("The given is in improper format, provide filepath for new file");
+                userInterface.print("The given is in improper format, provide filepath for new file");
                 this.fileReader = null;
 
                 log.warn("{} -- {} -- The data is not in csv format",fileConfig.getType(),fileConfig.getFilePath());
@@ -55,7 +55,7 @@ public class CsvReader extends Reader {
 
             default: {
                 state = "Improper state";
-                System.out.println("State failure");
+                userInterface.print("State failure");
 
                 log.error("{} -- {} -- The Reader is corrupted",fileConfig.getType(),fileConfig.getFilePath());
             }
@@ -80,12 +80,12 @@ public class CsvReader extends Reader {
             return true;
 
         } catch (IOException e) {
-            System.out.println("Reader failed to read the contents of the file");
+            userInterface.print("Reader failed to read the contents of the file");
             state = "Read Error";
             return false;
         }
         catch (CsvValidationException e) {
-            System.out.println("Error in CSV data structure");
+            userInterface.print("Error in CSV data structure");
             state = "CSV Error";
             return false;
         }
@@ -125,13 +125,13 @@ public class CsvReader extends Reader {
             return dataRecords;
 
         } catch (IOException e) {
-            System.out.println("Reader failed to read the contents of the file");
+            userInterface.print("Reader failed to read the contents of the file");
             state = "Read Error";
             errorHandling();
             return readFile();
 
         } catch (CsvException e) {
-            System.out.println("Error in parsing the csv");
+            userInterface.print("Error in parsing the csv");
             state = "CSV Error";
             errorHandling();
             return readFile();
@@ -149,7 +149,7 @@ public class CsvReader extends Reader {
             this.fileReader.close();
             this.reader.close();
         } catch (IOException e) {
-            System.out.println("Error in closing the file");
+            userInterface.print("Error in closing the file");
         }
     }
 
