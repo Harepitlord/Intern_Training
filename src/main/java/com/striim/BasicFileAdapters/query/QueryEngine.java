@@ -3,6 +3,7 @@ package com.striim.BasicFileAdapters.query;
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.database.StorageSpace;
+import com.striim.BasicFileAdapters.writer.Writer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -14,13 +15,14 @@ import java.util.stream.Collectors;
 public class QueryEngine {
     private final UserInterface userInterface;
     private final StorageSpace database;
+    private final Writer writer;
+    private Predicate<DataRecord> query;
     private ArrayList<String> fetchColumnsSet;
 
-    private Predicate<DataRecord> query;
-
-    public QueryEngine(UserInterface userInterface, StorageSpace databaseObj) {
+    public QueryEngine(Writer writer, StorageSpace databaseObj) {
         this.database = databaseObj;
-        this.userInterface = userInterface;
+        this.userInterface = writer.getUserInterface();
+        this.writer = writer;
     }
 
     public ArrayList<DataRecord> queryData() {
@@ -36,14 +38,11 @@ public class QueryEngine {
     public void fetchColumns() {
         Map<String, String> record = database.getDataObjArray().get(0).getRecords();
         ArrayList<String> keySet = new ArrayList<>(record.keySet());
-        query = userInterface.generateQueries(keySet);
-        fetchColumnsSet = userInterface.fetchColumns(keySet);
-        if (fetchColumnsSet.size() == 1) {
-            fetchColumnsSet.remove(0);
-            fetchColumnsSet.addAll(keySet);
-        } else {
-            fetchColumnsSet.remove(fetchColumnsSet.size() - 1);
-        }
+        userInterface.generateQueries(writer.getFileConfig(), keySet);
+        query = writer.getQuery();
+        userInterface.fetchColumns(writer.getFileConfig(), keySet);
+        fetchColumnsSet = writer.getFetchColumns();
+
     }
 
     public static boolean isProperConstraint(String constraint,ArrayList<String> keySet){
