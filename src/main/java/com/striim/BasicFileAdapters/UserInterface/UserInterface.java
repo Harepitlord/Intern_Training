@@ -1,10 +1,8 @@
 package com.striim.BasicFileAdapters.UserInterface;
 
 import com.striim.BasicFileAdapters.converter.FileConfig;
-import com.striim.BasicFileAdapters.database.DataRecord;
 
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public abstract class UserInterface {
 
@@ -19,11 +17,6 @@ public abstract class UserInterface {
         return availableUserInterfaces;
     }
 
-
-    public abstract void prepareReaderFileConfigs();
-
-    public abstract void prepareWriterFileConfigs();
-
     public abstract ArrayList<FileConfig> getReaderFileConfigs();
 
     public abstract ArrayList<FileConfig> getWriterFileConfigs();
@@ -32,9 +25,9 @@ public abstract class UserInterface {
 
     public abstract FileConfig getWriterFileConfig();
 
-    public abstract Predicate<DataRecord> generateQueries(ArrayList<String> keySet);
+    public abstract void generateQueries(FileConfig fileConfig, ArrayList<String> keySet);
 
-    public abstract ArrayList<String> fetchColumns(ArrayList<String> keyset);
+    public abstract void fetchColumns(FileConfig fileConfig, ArrayList<String> keyset);
 
     public abstract String getStorageType();
 

@@ -1,6 +1,5 @@
 package com.striim.BasicFileAdapters.writer;
 
-import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.database.StorageSpace;
 import com.striim.BasicFileAdapters.query.QueryEngine;
@@ -24,13 +23,13 @@ public class JsonWriter extends Writer {
     }
 
 
-    public void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService) {
+    public void writeFile(Writer writer, StorageSpace database, ExecutorService executorService) {
         if (!prepareWriter()) {
             errorHandling();
-            writeFile(userInterface, database, executorService);
+            writeFile(writer, database, executorService);
         }
-        this.userInterface = userInterface;
-        QueryEngine queryEngine = new QueryEngine(userInterface, database);
+        this.userInterface = writer.userInterface;
+        QueryEngine queryEngine = new QueryEngine(writer, database);
         queryEngine.fetchColumns();
 
         executorService.submit(() -> {

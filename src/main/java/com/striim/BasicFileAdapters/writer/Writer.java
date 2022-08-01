@@ -2,7 +2,10 @@ package com.striim.BasicFileAdapters.writer;
 
 import com.striim.BasicFileAdapters.UserInterface.UserInterface;
 import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.database.StorageSpace;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.XSlf4j;
 
 import java.io.File;
@@ -10,23 +13,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Predicate;
 
 @XSlf4j(topic = "General")
 public abstract class Writer {
 
     protected FileWriter fileWriter;
     protected String state;
-    protected UserInterface userInterface;
-    protected FileConfig fileConfig;
+    protected @Getter UserInterface userInterface;
+    protected @Getter
+    @Setter FileConfig fileConfig;
 
     private static final ArrayList<String> availableWriters;
 
-    static{
-        availableWriters=new ArrayList<>();
+    static {
+        availableWriters = new ArrayList<>();
         availableWriters.add("JSONWRITER");
     }
 
-    public static ArrayList<String> getAvailableWriters(){
+    public static ArrayList<String> getAvailableWriters() {
         return availableWriters;
     }
 
@@ -59,14 +64,18 @@ public abstract class Writer {
         return fileConfig.getFilePath();
     }
 
-    public void setFileConfig(FileConfig fileConfig) {
-        this.fileConfig = fileConfig;
-    }
-
     public String getName() {
         return String.format("%s -- %s", fileConfig.getType(), fileConfig.getFilePath());
     }
 
-    public abstract void writeFile(UserInterface userInterface, StorageSpace database, ExecutorService executorService);
+    public Predicate<DataRecord> getQuery() {
+        return fileConfig.getQuery();
+    }
+
+    public ArrayList<String> getFetchColumns() {
+        return fileConfig.getFetchColumns();
+    }
+
+    public abstract void writeFile(Writer writer, StorageSpace database, ExecutorService executorService);
 
 }

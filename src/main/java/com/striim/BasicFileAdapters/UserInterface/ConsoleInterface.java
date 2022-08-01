@@ -32,19 +32,12 @@ public class ConsoleInterface extends UserInterface {
         this.scanner = scanner;
     }
 
-    @Override
-    public void print(String msg) {
-        System.out.println(msg);
-    }
-
-    @Override
-    public void prepareReaderFileConfigs() {
+    private void prepareReaderFileConfigs() {
         readerConfigs = new ArrayList<>();
         readerConfigs.addAll(prepareFileConfigs("Reader"));
     }
 
-    @Override
-    public void prepareWriterFileConfigs() {
+    private void prepareWriterFileConfigs() {
         writerConfigs = new ArrayList<>();
         writerConfigs.addAll(prepareFileConfigs("Writer"));
     }
@@ -67,23 +60,23 @@ public class ConsoleInterface extends UserInterface {
     }
 
     public String getStorageType() {
-        System.out.println("Enter the storage type : "+ StorageSpace.getAvailableStorageSpaces());
+        print("Enter the storage type : " + StorageSpace.getAvailableStorageSpaces());
         while (true) {
             int choice;
             try {
                 String s = scanner.nextLine().trim();
                 choice = Integer.parseInt(s);
             } catch (NumberFormatException ex) {
-                System.out.println("Improper choice");
+                print("Improper choice");
                 continue;
             } catch (NoSuchElementException e) {
-                System.out.println("No choice entered");
+                print("No choice entered");
                 continue;
             }
             if (choice == 1) {
                 return "INMEMORYDATABASE";
             } else {
-                System.out.println("Improper choice");
+                print("Improper choice");
             }
         }
     }
@@ -103,9 +96,10 @@ public class ConsoleInterface extends UserInterface {
         System.out.println(msg);
     }
 
+
     public void fileSpecificConfig(FileConfig fileConfig) {
         if (fileConfig.getFileType().equals("CSV")) {
-            System.out.println("Enter the delimiter : (default => ',')");
+            print("Enter the delimiter : (default => ',')");
             char delim = ',';
             String val = scanner.nextLine().trim();
             if (val.length() >= 1)
@@ -117,11 +111,11 @@ public class ConsoleInterface extends UserInterface {
     private int filePathInput(FileConfig fileConfig, String type) {
         String path = "";
         if (type.equals("Reader")) {
-            System.out.println("Supported readers are : " + Reader.getAvailableReaders());
+            print("Supported readers are : " + Reader.getAvailableReaders());
         } else {
-            System.out.println("Supported writers are : " + Writer.getAvailableWriters());
+            print("Supported writers are : " + Writer.getAvailableWriters());
         }
-        System.out.println("Enter the file Path: ");
+        print("Enter the file Path: ");
         int next = 1;
         while (true) {
             try {
@@ -142,30 +136,30 @@ public class ConsoleInterface extends UserInterface {
                 if (directory.isDirectory()) {
                     if (type.equals("Writer")) {
                         if (path.contains(".") && Writer.isAvailable(path)) {
-                            if (f.createNewFile()) {
+                            if ((f.isFile() && f.canWrite()) || f.createNewFile()) {
                                 fileConfig.setFilePath(path);
                                 setFileType(fileConfig);
                                 break;
                             }
                         }
-                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path)) {
+                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path) && f.canRead()) {
                         fileConfig.setFilePath(path);
                         setFileType(fileConfig);
                         break;
                     }
                 }
             } catch (NoSuchElementException e) {
-                System.out.println("No path entered" + e.getMessage());
+                print("No path entered" + e.getMessage());
 
             } catch (IllegalStateException e) {
-                System.out.println("Scanner closed");
+                print("Scanner closed");
                 log.error("Scanner closed");
                 return -1;
             } catch (IOException e) {
-                System.out.println("File Error");
+                print("File Error");
                 log.warn("Error in opening the file -- {}", path);
             }
-            System.out.println("Enter proper file path: ");
+            print("Enter proper file path: ");
         }
         fileSpecificConfig(fileConfig);
         return next;
@@ -204,20 +198,20 @@ public class ConsoleInterface extends UserInterface {
         return temp;
     }
 
-    public Predicate<DataRecord> generateQueries(ArrayList<String> keySet) {
+    public void generateQueries(FileConfig fileConfig, ArrayList<String> keySet) {
 
         Predicate<DataRecord> query = null;
 
-        System.out.println("Enter the queries end with ',' to add more constraint and ';' to end the query");
-        System.out.println("eg : col > val,col < val;");
-        System.out.println("Available Columns are : "+keySet);
-        System.out.println("Supported operations are : "+FilterFactory.getAvailableOperation());
+        print("Enter the queries end with ',' to add more constraint and ';' to end the query");
+        print("eg : col > val,col < val;");
+        print("Available Columns are : " + keySet);
+        print("Supported operations are : " + FilterFactory.getAvailableOperation());
         boolean another = true;
         do {
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().trim();
 
             if (input.length() == 0 || input.equals(";"))
-                return null;
+                break;
 
             if (input.endsWith(";")) {
                 another = false;
@@ -234,37 +228,33 @@ public class ConsoleInterface extends UserInterface {
                         if (temp != null)
                             query = query.and(temp);
                     }
-                } else{
-                    System.out.println("Enter the constraints properly");
-                    query=null;
-                    another=true;
+                } else {
+                    print("Enter the constraints properly");
+                    query = null;
+                    another = true;
                     break;
                 }
             }
         } while (another);
-        return query;
+        fileConfig.setQuery(query);
     }
 
-    public ArrayList<String> fetchColumns(ArrayList<String> keySet) {
-        System.out.println("Enter the names of the columns you want to fetch.Enter End when you want to end.For All Columns enter End.");
-        System.out.println(keySet);
+    public void fetchColumns(FileConfig fileConfig, ArrayList<String> keySet) {
+        print("Enter the names of the columns you want to fetch.Enter End when you want to end.For All Columns enter End.");
+        print(keySet.toString());
         ArrayList<String> fetchColumnsSet = new ArrayList<>();
         String colName = "Start";
         while (!colName.equalsIgnoreCase("END")) {
             colName = scanner.nextLine().trim();
-            boolean columnFound = false;
-            for (String key : keySet) {
-                if (key.equals(colName) || colName.equalsIgnoreCase("END")) {
-                    columnFound = true;
-                    break;
-                }
-            }
-            if (columnFound) {
+            boolean columnFound = colName.equalsIgnoreCase("END") || keySet.contains(colName);
+            if (columnFound && !colName.equalsIgnoreCase("END")) {
                 fetchColumnsSet.add(colName);
             } else {
-                System.out.println("Enter the column name correctly !!!");
+                print("Enter the column name correctly !!!");
             }
         }
-        return fetchColumnsSet;
+        if (fetchColumnsSet.size() == 0)
+            fetchColumnsSet.addAll(keySet);
+        fileConfig.setFetchColumns(fetchColumnsSet);
     }
 }

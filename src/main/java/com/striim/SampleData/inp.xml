@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Config>
+    <StorageType>InMemoryDatabase</StorageType>
+    <Readers>
+        <Reader>
+            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/bank1.csv
+            </FilePath>
+            <Delimiter>,</Delimiter>
+        </Reader>
+        <Reader>
+            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/bank2.csv
+            </FilePath>
+            <Delimiter>,</Delimiter>
+        </Reader>
+    </Readers>
+    <Writers>
+        <Writer>
+            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/xml_o1.json
+            </FilePath>
+            <Queries>
+                <Query>age > 45</Query>
+            </Queries>
+            <Columns>
+                <Column>loan</Column>
+                <Column>education</Column>
+            </Columns>
+        </Writer>
+    </Writers>
+</Config>

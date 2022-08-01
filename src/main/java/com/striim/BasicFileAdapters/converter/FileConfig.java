@@ -1,41 +1,33 @@
 package com.striim.BasicFileAdapters.converter;
 
+import com.striim.BasicFileAdapters.database.DataRecord;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.function.Predicate;
+
 public class FileConfig {
 
-    protected String filePath;
-    protected String fileType;
-    protected String delimiter;
-    protected String type;
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public String getDelimiter() {
-        return delimiter;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setFilePath(String path) {
-        filePath = path;
-    }
-
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
+    private @Getter
+    @Setter String filePath;
+    private @Getter
+    @Setter String fileType;
+    private @Getter
+    @Setter String delimiter;
+    private @Getter String type;
+    private @Getter Predicate<DataRecord> query;
+    private @Getter
+    @Setter ArrayList<String> fetchColumns;
 
     public void setType(String type) {
         this.type = type.toUpperCase();
+    }
+
+    public void setQuery(Predicate<DataRecord> query) {
+        if (this.query == null)
+            this.query = query;
+        else
+            this.query = this.query.and(query);
     }
 }

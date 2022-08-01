@@ -92,7 +92,7 @@ public class Converter {
             Writer writer = (Writer) context.getBean(w.getType());
             writer.setFileConfig(w);
             if (addWriter(writer))
-                writer.writeFile(userInterface, storage, executorService);
+                writer.writeFile(writer, storage, executorService);
         });
     }
 

@@ -98,7 +98,7 @@ public class CsvReader extends Reader {
                 return readFile();
             }
 
-            delimiter = fileConfig.getDelimiter().charAt(0);
+            delimiter = fileConfig.getDelimiter() != null ? fileConfig.getDelimiter().charAt(0) : ',';
 
             if (headers == null)
                 if (!this.prepareHeaders()) {
