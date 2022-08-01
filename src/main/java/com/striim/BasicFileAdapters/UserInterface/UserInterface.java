@@ -42,4 +42,6 @@ public abstract class UserInterface {
 
     public abstract String getClassName();
 
+    public abstract void print(String msg);
+
 }

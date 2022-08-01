@@ -40,6 +40,11 @@ public class ConsoleInterface extends UserInterface {
     }
 
     @Override
+    public void print(String msg) {
+        System.out.println(msg);
+    }
+
+    @Override
     public void prepareReaderFileConfigs() {
         readerConfigs = new ArrayList<>();
         readerConfigs.addAll(prepareFileConfigs("Reader"));
