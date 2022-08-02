@@ -106,8 +106,18 @@ public class XMLInterface extends UserInterface {
         System.out.println(msg);
     }
 
+    private void reconfigure(String msg) {
+        //print(msg);
+        log.warn(msg);
+        log.info("New XML File is requested");
+
+        this.xmlFilePath = null;
+        readConfigs();
+    }
+
     private String verifyFilePath(String path, String type) {
-        System.out.println(path);
+        if (path == null)
+            return null;
         try {
             File f = new File(path);
             String dir = path.substring(0, path.lastIndexOf("/") + 1);
@@ -134,7 +144,14 @@ public class XMLInterface extends UserInterface {
 
     private FileConfig prepareReaderFileConfig(Node e) {
         FileConfig fileConfig = new FileConfig();
-        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Reader");
+        String path;
+        try {
+            path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Reader");
+        } catch (NullPointerException exp) {
+            log.warn("No File Path is given");
+            log.warn(exp.getMessage());
+            return null;
+        }
         if (path == null)
             return null;
         fileConfig.setFilePath(path);
@@ -147,7 +164,14 @@ public class XMLInterface extends UserInterface {
 
     private FileConfig prepareWriterFileConfig(Node e) {
         FileConfig fileConfig = new FileConfig();
-        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Writer");
+        String path;
+        try {
+            path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Writer");
+        }catch (NullPointerException exp) {
+            log.warn("No File Path is given");
+            log.warn(exp.getMessage());
+            return null;
+        }
         if (path == null)
             return null;
         fileConfig.setFilePath(path);
@@ -213,20 +237,12 @@ public class XMLInterface extends UserInterface {
 
         List<Node> nodes = document.selectNodes("Config/Readers/Reader");
         if (nodes.size() == 0) {
-            print("No Reader Configuration is given");
-            log.warn("No Reader Configuration is given");
-            log.info("New XML File is requested");
-
-            this.xmlFilePath = null;
-            readConfigs();
-        }
-        for (Node n : nodes) {
-            FileConfig fileConfig = prepareReaderFileConfig(n);
-            if (fileConfig != null)
-                readers.add(fileConfig);
+            reconfigure("No Reader Configuration is given");
         }
 
-        //readers = (ArrayList<FileConfig>) nodes.stream().map(this::prepareReaderFileConfig).filter(Objects::nonNull).collect(Collectors.toList());
+        readers = (ArrayList<FileConfig>) nodes.stream().map(this::prepareReaderFileConfig).filter(Objects::nonNull).collect(Collectors.toList());
+        if (readers.size() == 0)
+            reconfigure("No Proper Reader Configuration is given");
         log.info("No. of Reader File Config : {}", readers.size());
 
     }
@@ -237,15 +253,12 @@ public class XMLInterface extends UserInterface {
         List<Node> nodes = document.selectNodes("Config/Writers/Writer");
 
         if (nodes.size() == 0) {
-            print("No Writer Configuration is given");
-            log.warn("No Writer Configuration is given");
-            log.info("New XML File is requested");
-
-            this.xmlFilePath = null;
-            readConfigs();
+            reconfigure("No Writer Configuration is given");
         }
 
         writers = (ArrayList<FileConfig>) nodes.stream().map(this::prepareWriterFileConfig).filter(Objects::nonNull).collect(Collectors.toList());
+        if (writers.size()==0)
+            reconfigure("No Proper Writer Configuration is given");
         log.info("No. of Writers File Config : {}", writers.size());
 
     }
@@ -265,6 +278,7 @@ public class XMLInterface extends UserInterface {
 
         } catch (DocumentException e) {
             print("Error in reading a file");
+            log.error(e.getMessage());
         }
     }
 }

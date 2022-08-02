@@ -88,6 +88,10 @@ public class Converter {
 
     public void writers() {
         ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
+        long start = System.nanoTime();
+        String msg = "Files are being written.";
+        userInterface.print(msg);
+        log.info(msg);
         writersFileConfigs.forEach(w -> {
             Writer writer = (Writer) context.getBean(w.getType());
             writer.setFileConfig(w);
@@ -95,17 +99,24 @@ public class Converter {
             if (addWriter(writer))
                 writer.writeFile(writer, storage, executorService);
         });
+        msg = "File writing completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms";
+        userInterface.print(msg);
+        log.info(msg);
     }
 
     public void readFiles(ExecutorService executorService) {
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> storage.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();
-        userInterface.print("Files are being read .");
+        String msg = "Files are being read.";
+        userInterface.print(msg);
+        log.info(msg);
         while(loop) {
             loop = !futures.stream().allMatch(Future::isDone);
         }
-        userInterface.print("File reading completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms");
+        msg = "File reading completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms";
+        userInterface.print(msg);
+        log.info(msg);
     }
 
 }

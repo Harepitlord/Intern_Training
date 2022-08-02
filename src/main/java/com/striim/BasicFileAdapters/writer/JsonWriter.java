@@ -35,6 +35,8 @@ public class JsonWriter extends Writer {
         executorService.submit(() -> {
             ArrayList<DataRecord> toWriteResultSet = queryEngine.queryData();
 
+            log.info("{} -- {} -- \nQueried Data : {}",fileConfig.getType(),fileConfig.getFilePath(),toWriteResultSet.size());
+
             JSONArray jsonArray = toJson(toWriteResultSet);
             JSONObject jsonObj = new JSONObject();
             try {
