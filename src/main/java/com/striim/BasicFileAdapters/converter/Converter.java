@@ -91,6 +91,7 @@ public class Converter {
         writersFileConfigs.forEach(w -> {
             Writer writer = (Writer) context.getBean(w.getType());
             writer.setFileConfig(w);
+            writer.setUserInterface(userInterface);
             if (addWriter(writer))
                 writer.writeFile(writer, storage, executorService);
         });

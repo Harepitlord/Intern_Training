@@ -26,7 +26,7 @@ public class QueryEngine {
     }
 
     public ArrayList<DataRecord> queryData() {
-        if (query == null || fetchColumnsSet.get(0).equalsIgnoreCase("End")) {
+        if (query == null || fetchColumnsSet.size()==0) {
             log.info("Query is empty or All columns options selected");
             return database.getDataObjArray();
         }

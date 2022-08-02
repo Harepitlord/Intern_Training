@@ -20,7 +20,7 @@ public abstract class Writer {
 
     protected FileWriter fileWriter;
     protected String state;
-    protected @Getter UserInterface userInterface;
+    protected @Getter @Setter UserInterface userInterface;
     protected @Getter
     @Setter FileConfig fileConfig;
 

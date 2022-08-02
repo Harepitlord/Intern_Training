@@ -19,20 +19,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @XSlf4j(topic = "General")
-@Component
+@Component("XMLInterface")
 public class XMLInterface extends UserInterface {
 
     private Scanner scanner;
-    private String path;
+    private String xmlFilePath;
     private String storageType;
     private Document document;
     private ArrayList<FileConfig> readers;
     private ArrayList<FileConfig> writers;
     private ConsoleInterface consoleInterface;
-
-    public XMLInterface() {
-        readConfigs();
-    }
 
     @Autowired
     public void setScanner(Scanner scanner) {
@@ -46,6 +42,8 @@ public class XMLInterface extends UserInterface {
 
     @Override
     public ArrayList<FileConfig> getReaderFileConfigs() {
+        if (xmlFilePath == null)
+            readConfigs();
         return readers;
     }
 
@@ -66,26 +64,26 @@ public class XMLInterface extends UserInterface {
 
     @Override
     public void generateQueries(FileConfig fileConfig, ArrayList<String> keySet) {
-        List<Node> nodes = document.selectNodes("/Config/Writers");
+        List<Node> nodes = document.selectNodes("Config/Writers/Writer");
 
         Optional<Node> tempNode = nodes.stream()
-                .filter(n -> fileConfig.getFilePath().equalsIgnoreCase(n.selectSingleNode("FilePath").getStringValue())).findFirst();
+                .filter(n -> fileConfig.getFilePath().equalsIgnoreCase(n.selectSingleNode("FilePath").getStringValue().trim())).findFirst();
 
-        tempNode.ifPresent(node -> node.selectNodes("/Queries").forEach(e -> generateQuery(fileConfig, e, keySet)));
+        tempNode.ifPresent(node -> node.selectNodes("Queries/Query").forEach(e -> generateQuery(fileConfig, e, keySet)));
     }
 
     @Override
     public void fetchColumns(FileConfig fileConfig, ArrayList<String> keyset) {
 
-        Optional<Node> tempNode = document.selectNodes("/Config/Writers").stream()
-                .filter(n -> fileConfig.getFilePath().equalsIgnoreCase(n.selectSingleNode("FilePath").getStringValue()))
+        Optional<Node> tempNode = document.selectNodes("Config/Writers/Writer").stream()
+                .filter(n -> fileConfig.getFilePath().equalsIgnoreCase(n.selectSingleNode("FilePath").getStringValue().trim()))
                 .findFirst();
         if (tempNode.isPresent()) {
-            List<Node> columns = tempNode.get().selectNodes("/Columns");
+            List<Node> columns = tempNode.get().selectNodes("Columns/Column");
             if (columns.size() == 0)
                 fileConfig.setFetchColumns(keyset);
             else {
-                fileConfig.setFetchColumns((ArrayList<String>) columns.stream().map(Node::getStringValue)
+                fileConfig.setFetchColumns((ArrayList<String>) columns.stream().map(n->n.getStringValue().trim())
                         .filter(keyset::contains).collect(Collectors.toList()));
             }
         }
@@ -93,7 +91,9 @@ public class XMLInterface extends UserInterface {
 
     @Override
     public String getStorageType() {
-        return storageType == null ? "InMemoryDatabase" : storageType;
+        if (xmlFilePath == null)
+            readConfigs();
+        return storageType == null ? "INMEMORYDATABASE" : storageType;
     }
 
     @Override
@@ -107,6 +107,7 @@ public class XMLInterface extends UserInterface {
     }
 
     private String verifyFilePath(String path, String type) {
+        System.out.println(path);
         try {
             File f = new File(path);
             String dir = path.substring(0, path.lastIndexOf("/") + 1);
@@ -133,7 +134,7 @@ public class XMLInterface extends UserInterface {
 
     private FileConfig prepareReaderFileConfig(Node e) {
         FileConfig fileConfig = new FileConfig();
-        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue(), "Reader");
+        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Reader");
         if (path == null)
             return null;
         fileConfig.setFilePath(path);
@@ -146,30 +147,32 @@ public class XMLInterface extends UserInterface {
 
     private FileConfig prepareWriterFileConfig(Node e) {
         FileConfig fileConfig = new FileConfig();
-        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue(), "Writer");
+        String path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Writer");
         if (path == null)
             return null;
         fileConfig.setFilePath(path);
         setFileType(fileConfig);
         fileConfig.setType(fileConfig.getFileType() + "Writer");
         Node delim = e.selectSingleNode("Delimiter");
-        fileConfig.setDelimiter(delim == null ? null : delim.getStringValue());
+        fileConfig.setDelimiter(delim == null ? null : delim.getStringValue().trim());
         return fileConfig;
     }
 
     private void readFilePath() {
         String path;
         print("Enter the XML file Path: ");
-        while (this.path != null) {
+        while (this.xmlFilePath == null) {
             try {
                 path = scanner.nextLine().trim();
                 if (path.length() == 0 || path.equals(";")) {
-                    if (this.path == null)
+                    if (this.xmlFilePath == null)
                         throw new NoSuchElementException("Enter the file path for xml");
                 }
                 path = verifyFilePath(path, "Reader");
-                if (path != null)
-                    this.path = path;
+                if (path != null) {
+                    this.xmlFilePath = path;
+                    return;
+                }
 
             } catch (NoSuchElementException e) {
                 print("No path entered" + e.getMessage());
@@ -178,17 +181,18 @@ public class XMLInterface extends UserInterface {
                 print("Scanner closed");
                 log.error("Scanner closed");
             }
-            print("Enter proper file path: ");
+            print("readFilePath : Enter proper file path: ");
+            this.xmlFilePath = null;
         }
     }
 
     private void setStorageType() {
-        List<Node> nodes = document.selectNodes("/Config");
+        List<Node> nodes = document.selectNodes("/Config/StorageType");
         if (nodes.size() != 1) {
             storageType = "INMEMORYDATABASE";
             log.warn("Improper configuration of the storage type. Defaulting to InMemory Database");
         } else {
-            storageType = nodes.get(0).getStringValue();
+            storageType = nodes.get(0).getStringValue().trim();
             log.info("Storage space configuration is set : {}", storageType);
         }
     }
@@ -196,9 +200,9 @@ public class XMLInterface extends UserInterface {
     private void generateQuery(FileConfig fileConfig, Node e, ArrayList<String> keySet) {
         if (QueryEngine.isProperConstraint(e.getStringValue(), keySet)) {
             if (fileConfig.getQuery() == null) {
-                fileConfig.setQuery(FilterFactory.getFilter(e.getStringValue()));
+                fileConfig.setQuery(FilterFactory.getFilter(e.getStringValue().trim()));
             } else {
-                Predicate<DataRecord> temp = FilterFactory.getFilter(e.getStringValue());
+                Predicate<DataRecord> temp = FilterFactory.getFilter(e.getStringValue().trim());
                 fileConfig.setQuery(temp);
             }
         }
@@ -207,17 +211,22 @@ public class XMLInterface extends UserInterface {
     private void setReaders() {
         readers = new ArrayList<>();
 
-        List<Node> nodes = document.selectNodes("/Config/Readers");
+        List<Node> nodes = document.selectNodes("Config/Readers/Reader");
         if (nodes.size() == 0) {
             print("No Reader Configuration is given");
             log.warn("No Reader Configuration is given");
             log.info("New XML File is requested");
 
-            this.path = null;
+            this.xmlFilePath = null;
             readConfigs();
         }
+        for (Node n : nodes) {
+            FileConfig fileConfig = prepareReaderFileConfig(n);
+            if (fileConfig != null)
+                readers.add(fileConfig);
+        }
 
-        readers = (ArrayList<FileConfig>) nodes.stream().map(this::prepareReaderFileConfig).filter(Objects::nonNull).collect(Collectors.toList());
+        //readers = (ArrayList<FileConfig>) nodes.stream().map(this::prepareReaderFileConfig).filter(Objects::nonNull).collect(Collectors.toList());
         log.info("No. of Reader File Config : {}", readers.size());
 
     }
@@ -225,14 +234,14 @@ public class XMLInterface extends UserInterface {
     private void setWriters() {
         writers = new ArrayList<>();
 
-        List<Node> nodes = document.selectNodes("/Config/Writers");
+        List<Node> nodes = document.selectNodes("Config/Writers/Writer");
 
         if (nodes.size() == 0) {
             print("No Writer Configuration is given");
             log.warn("No Writer Configuration is given");
             log.info("New XML File is requested");
 
-            this.path = null;
+            this.xmlFilePath = null;
             readConfigs();
         }
 
@@ -242,11 +251,11 @@ public class XMLInterface extends UserInterface {
     }
 
     private void readConfigs() {
-        if (path == null)
+        if (xmlFilePath == null)
             readFilePath();
 
         try {
-            document = new SAXReader().read(new File(path));
+            document = new SAXReader().read(new File(xmlFilePath));
 
             setStorageType();
 

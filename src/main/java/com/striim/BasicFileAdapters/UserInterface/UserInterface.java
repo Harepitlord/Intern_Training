@@ -11,6 +11,7 @@ public abstract class UserInterface {
     static {
         availableUserInterfaces=new ArrayList<>();
         availableUserInterfaces.add("1.Console Interface");
+        availableUserInterfaces.add("2.XML Interface");
     }
 
     public static ArrayList<String> getAvailableUserInterfaces(){

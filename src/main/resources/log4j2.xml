@@ -5,8 +5,7 @@
             %d %p %C{1.} [%t] %m%n
         </Property>
         <Property name="CONSOLE_LOG_PATTERN">
-            %style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}]
-            %style{%C{3.}}{bright,yellow}:%logger %msg%n%throwable
+            %style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}]%style{%C{3.}}{bright,yellow}:%logger %msg%n%throwable
         </Property>
         <Property name="LOG_DIR">
             com/striim/BasicFileAdapters/Logs
@@ -28,7 +27,7 @@
         <Root level="Warn">
             <AppenderRef ref="ConsoleApp"/>
         </Root>
-        <Logger name="general" level="INFO" additivity="false">
+        <Logger name="General" level="INFO" additivity="false">
             <AppenderRef ref="RollingFileApp"/>
             <AppenderRef ref="ConsoleApp"/>
         </Logger>

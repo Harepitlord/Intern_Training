@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Config>
-    <StorageType>InMemoryDatabase</StorageType>
+    <StorageType>INMEMORYDATABASE</StorageType>
     <Readers>
         <Reader>
             <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/bank1.csv
@@ -21,6 +21,7 @@
                 <Query>age > 45</Query>
             </Queries>
             <Columns>
+                <Column>age</Column>
                 <Column>loan</Column>
                 <Column>education</Column>
             </Columns>

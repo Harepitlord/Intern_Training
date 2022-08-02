@@ -121,7 +121,7 @@ public class CsvReader extends Reader {
             this.fileReader.close();
 
             log.info("{} -- {} -- The file has been successfully read and parsed",fileConfig.getType(),fileConfig.getFilePath());
-            log.info("{} -- {} -- Records read : {}",fileConfig.getType(),fileConfig.getFilePath(),dataRecords.size());
+            log.info("{} -- {} -- Records read : {}",fileConfig.getType(),fileConfig.getFilePath(),String.valueOf(dataRecords.size()));
             return dataRecords;
 
         } catch (IOException e) {
