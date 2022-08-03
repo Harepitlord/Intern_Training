@@ -88,10 +88,7 @@ public class Converter {
 
     public void writers() {
         ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
-        long start = System.nanoTime();
-        String msg = "Files are being written.";
-        userInterface.print(msg);
-        log.info(msg);
+
         writersFileConfigs.forEach(w -> {
             Writer writer = (Writer) context.getBean(w.getType());
             writer.setFileConfig(w);
@@ -99,9 +96,7 @@ public class Converter {
             if (addWriter(writer))
                 writer.writeFile(writer, storage, executorService);
         });
-        msg = "File writing completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms";
-        userInterface.print(msg);
-        log.info(msg);
+
     }
 
     public void readFiles(ExecutorService executorService) {

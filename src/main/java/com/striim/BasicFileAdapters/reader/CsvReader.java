@@ -93,7 +93,7 @@ public class CsvReader extends Reader {
 
     public ArrayList<DataRecord> readFile() {
         try {
-            if (!this.prepareReader(fileConfig)) {
+            if (this.prepareReader(fileConfig)) {
                 errorHandling();
                 return readFile();
             }

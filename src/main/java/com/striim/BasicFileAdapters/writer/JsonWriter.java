@@ -33,6 +33,10 @@ public class JsonWriter extends Writer {
         queryEngine.fetchColumns();
 
         executorService.submit(() -> {
+            long start = System.nanoTime();
+            String msg = "Files are being written.";
+            userInterface.print(msg);
+            log.info(msg);
             ArrayList<DataRecord> toWriteResultSet = queryEngine.queryData();
 
             log.info("{} -- {} -- \nQueried Data : {}",fileConfig.getType(),fileConfig.getFilePath(),toWriteResultSet.size());
@@ -47,6 +51,9 @@ public class JsonWriter extends Writer {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            msg = "File writing completed : time taken -> " + (System.nanoTime() - start) / 1000000 + " ms";
+            userInterface.print(msg);
+            log.info(msg);
         });
     }
 

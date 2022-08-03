@@ -247,8 +247,9 @@ public class ConsoleInterface extends UserInterface {
         while (!colName.equalsIgnoreCase("END")) {
             colName = scanner.nextLine().trim();
             boolean columnFound = colName.equalsIgnoreCase("END") || keySet.contains(colName);
-            if (columnFound && !colName.equalsIgnoreCase("END")) {
-                fetchColumnsSet.add(colName);
+            if (columnFound) {
+                if (!colName.equalsIgnoreCase("END"))
+                    fetchColumnsSet.add(colName);
             } else {
                 print("Enter the column name correctly !!!");
             }

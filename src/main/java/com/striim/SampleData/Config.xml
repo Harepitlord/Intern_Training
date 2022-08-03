@@ -3,8 +3,7 @@
     <StorageType>INMEMORYDATABASE</StorageType>
     <Readers>
         <Reader>
-            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/bank1.csv</FilePath>
-            <Delimiter>,</Delimiter>
+            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/xml_1.json</FilePath>
         </Reader>
         <Reader>
             <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleData/bank2.csv</FilePath>
