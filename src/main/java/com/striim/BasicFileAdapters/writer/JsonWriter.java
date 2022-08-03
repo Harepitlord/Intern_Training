@@ -23,13 +23,12 @@ public class JsonWriter extends Writer {
     }
 
 
-    public void writeFile(Writer writer, StorageSpace database, ExecutorService executorService) {
-        if (!prepareWriter()) {
+    public void writeFile( StorageSpace database, ExecutorService executorService) {
+        if (prepareWriter()) {
             errorHandling();
-            writeFile(writer, database, executorService);
+            writeFile( database, executorService);
         }
-        this.userInterface = writer.userInterface;
-        QueryEngine queryEngine = new QueryEngine(writer, database);
+        QueryEngine queryEngine = new QueryEngine(this, database);
         queryEngine.fetchColumns();
 
         executorService.submit(() -> {
@@ -47,6 +46,7 @@ public class JsonWriter extends Writer {
                 jsonObj.put("JSON Data", jsonArray);
                 fileWriter.write(jsonObj.toString());
                 fileWriter.flush();
+                fileWriter.close();
                 state = "Completed";
             } catch (Exception ex) {
                 ex.printStackTrace();

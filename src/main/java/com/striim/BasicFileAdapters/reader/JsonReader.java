@@ -5,6 +5,8 @@ import lombok.extern.slf4j.XSlf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 @XSlf4j(topic = "General")
 @Component("JSONREADER")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class JsonReader extends Reader{
 
     private JSONArray jsonArray;
