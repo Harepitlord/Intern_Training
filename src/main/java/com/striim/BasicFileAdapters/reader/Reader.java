@@ -27,6 +27,7 @@ abstract public class Reader {
     static{
         availableReaders=new ArrayList<>();
         availableReaders.add("CSVREADER");
+        availableReaders.add("JSONREADER");
     }
 
     public static ArrayList<String> getAvailableReaders(){
@@ -41,14 +42,14 @@ abstract public class Reader {
 
             log.info("{} -- {} -- The file has been connected",fileConfig.getType(),fileConfig.getFilePath());
 
-            return true;
+            return false;
         } catch (FileNotFoundException e) {
             userInterface.print("Error in opening the file");
             state = "File Not Found";
 
             log.error("{} -- {} -- Error in opening the file.", fileConfig.getType(), fileConfig.getFilePath());
 
-            return false;
+            return true;
         }
     }
 
