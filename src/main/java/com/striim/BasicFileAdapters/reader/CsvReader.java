@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// This class will be used to read data from the csv file and parse it into dataObjects and returns those to
-// converter interface
 @XSlf4j(topic = "General")
 @Component("CSVREADER")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

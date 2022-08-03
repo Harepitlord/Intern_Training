@@ -30,7 +30,7 @@
         </Root>
         <Logger name="general" level="INFO" additivity="false">
             <AppenderRef ref="RollingFileApp"/>
-            <AppenderRef ref="ConsoleApp"/>
+<!--            <AppenderRef ref="ConsoleApp"/>-->
         </Logger>
     </Loggers>
 </Configuration>
