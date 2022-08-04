@@ -1,0 +1,9 @@
+filePathInput,expected
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.csv,true
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.xml,false
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/,false
+fhgjhkh,false
+4576766,false
+/dfghj/asdf/ertyui.csv,false
+/dfghj/asdf/bank1.csv,false
+bank1.csv,false

@@ -1,28 +1,40 @@
 package com.striim.UnitTests;
 
+import com.striim.BasicFileAdapters.converter.Converter;
+import com.striim.BasicFileAdapters.converter.FileConfig;
+import com.striim.BasicFileAdapters.reader.CsvReader;
 import com.striim.BasicFileAdapters.reader.Reader;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AddReaderTest {
 
-    private ArrayList<Reader> readers;
+    static Converter converter;
 
     @BeforeAll
-    void readersSetup(){
-
+    static void readersSetup(){
+        converter=new Converter();
+        Reader reader1=new CsvReader();
+        FileConfig file1=new FileConfig();
+        file1.setFilePath("/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.csv");
+        file1.setDelimiter(",");
+        reader1.setFileConfig(file1);
+        converter.addReader(reader1);
     }
 
-    @BeforeEach
-    void init(){
-
-    }
-
-    @Test
-    void addReader() {
+    @ParameterizedTest
+    @CsvSource({"/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank.csv,true","/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.csv,false"})
+    void validateAddReader(String filepath,String expected) {
+        int initialSize=converter.readers.size();
+        Reader reader2=new CsvReader();
+        FileConfig fileObj=new FileConfig();
+        fileObj.setFilePath(filepath);
+        fileObj.setDelimiter(",");
+        reader2.setFileConfig(fileObj);
+        converter.addReader(reader2);
+        Assertions.assertEquals(Boolean.parseBoolean(expected),converter.readers.size()==initialSize+1);
     }
 
 }

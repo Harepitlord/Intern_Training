@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Component("converter")
 public class Converter {
 
-    private final ArrayList<Reader> readers;
-    private final ArrayList<Writer> writers;
+    public ArrayList<Reader> readers;
+    public ArrayList<Writer> writers;
     private StorageSpace storage;
     private @Setter UserInterface userInterface;
     private ApplicationContext context;

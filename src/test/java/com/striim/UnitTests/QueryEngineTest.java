@@ -12,7 +12,7 @@ public class QueryEngineTest{
     @ParameterizedTest
     @CsvFileSource(resources="/constraints.csv",numLinesToSkip=1)
     public void validateConstraint(String constraint,String expected){
-        Assertions.assertEquals(QueryEngine.isProperConstraint(constraint,new ArrayList<String>(Arrays.asList("age","education","marital"))),Boolean.parseBoolean(expected));
+        Assertions.assertEquals(Boolean.parseBoolean(expected),QueryEngine.isProperConstraint(constraint,new ArrayList<String>(Arrays.asList("age","education","marital"))));
     }
 
 }
