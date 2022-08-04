@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 @XSlf4j(topic = "General")
 @Component("CSVWRITER")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class CsvWriter extends Writer{
+public class CsvWriter extends Writer {
 
     private CSVWriter csvWriter;
 

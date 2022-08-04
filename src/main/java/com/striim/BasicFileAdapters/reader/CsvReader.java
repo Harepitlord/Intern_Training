@@ -65,11 +65,17 @@ public class CsvReader extends Reader {
         fileConfig = userInterface.getReaderFileConfig();
     }
 
+    @Override
+    protected boolean prepareReader(FileConfig fileConfig) {
+        if(super.prepareReader(fileConfig))
+            return true;
+        CSVParser parser = new CSVParserBuilder().withSeparator(delimiter).build();
+        reader = new CSVReaderBuilder(fileReader).withCSVParser(parser).build();
+        return false;
+    }
+
     protected boolean prepareHeaders() {
         try {
-            CSVParser parser = new CSVParserBuilder().withSeparator(delimiter).build();
-            reader = new CSVReaderBuilder(fileReader).withCSVParser(parser).build();
-
             String[] ar = reader.readNext();
 
             if (ar == null) {

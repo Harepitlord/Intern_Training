@@ -4,6 +4,8 @@ import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import com.striim.BasicFileAdapters.query.FilterFactory;
 import com.striim.BasicFileAdapters.query.QueryEngine;
+import com.striim.BasicFileAdapters.reader.Reader;
+import com.striim.BasicFileAdapters.writer.Writer;
 import lombok.extern.slf4j.XSlf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -143,7 +145,6 @@ public class XMLInterface extends UserInterface {
     }
 
     private FileConfig prepareReaderFileConfig(Node e) {
-        FileConfig fileConfig = new FileConfig();
         String path;
         try {
             path = verifyFilePath(e.selectSingleNode("FilePath").getStringValue().trim(), "Reader");
@@ -152,8 +153,10 @@ public class XMLInterface extends UserInterface {
             log.warn(exp.getMessage());
             return null;
         }
-        if (path == null)
+        if (path == null || !Reader.isAvailable(path))
             return null;
+
+        FileConfig fileConfig = new FileConfig();
         fileConfig.setFilePath(path);
         setFileType(fileConfig);
         fileConfig.setType(fileConfig.getFileType() + "Reader");
@@ -172,7 +175,7 @@ public class XMLInterface extends UserInterface {
             log.warn(exp.getMessage());
             return null;
         }
-        if (path == null)
+        if (path == null || !Writer.isAvailable(path))
             return null;
         fileConfig.setFilePath(path);
         setFileType(fileConfig);
