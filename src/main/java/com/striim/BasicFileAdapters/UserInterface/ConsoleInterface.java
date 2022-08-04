@@ -109,14 +109,93 @@ public class ConsoleInterface extends UserInterface {
         }
     }
 
+//    private int filePathInput(FileConfig fileConfig, String type) {
+//        String path = "";
+//        if (type.equals("Reader")) {
+//            System.out.println("Supported readers are : " + Reader.getAvailableReaders());
+//        } else {
+//            System.out.println("Supported writers are : " + Writer.getAvailableWriters());
+//        }
+//        System.out.println("Enter the file Path: ");
+//        int next = 1;
+//        while (true) {
+//            try {
+//                path = scanner.nextLine().trim();
+//                if (path.length() == 0 || path.equals(";")) {
+//                    if (temp.size() > 0)
+//                        return 0;
+//                    else
+//                        throw new NoSuchElementException("Empty Input line");
+//                }
+//                if (path.endsWith(";")) {
+//                    next = -1;
+//                    path = path.substring(0, path.length() - 1);
+//                }
+//                File f = new File(path);
+//                String dir = path.substring(0, path.lastIndexOf("/") + 1);
+//                File directory = new File(dir);
+//                if (directory.isDirectory()) {
+//                    if (type.equals("Writer")) {
+//                        if (path.contains(".") && Writer.isAvailable(path)) {
+//                            if (f.createNewFile()) {
+//                                fileConfig.setFilePath(path);
+//                                setFileType(fileConfig);
+//                                break;
+//                            }
+//                        }
+//                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path)) {
+//                        fileConfig.setFilePath(path);
+//                        setFileType(fileConfig);
+//                        break;
+//                    }
+//                }
+//            } catch (NoSuchElementException e) {
+//                System.out.println("No path entered" + e.getMessage());
+//
+//            } catch (IllegalStateException e) {
+//                System.out.println("Scanner closed");
+//                log.error("Scanner closed");
+//                return -1;
+//            } catch (IOException e) {
+//                System.out.println("File Error");
+//                log.warn("Error in opening the file -- {}", path);
+//            }
+//            System.out.println("Enter proper file path: ");
+//        }
+//        fileSpecificConfig(fileConfig);
+//        return next;
+//    }
+
+    public boolean verifyFilePath(String path, String type) {
+        if (path == null)
+            return false;
+        try {
+            File f = new File(path);
+            String dir = path.substring(0, path.lastIndexOf("/") + 1);
+            File directory = new File(dir);
+            if (directory.isDirectory()) {
+                if (type.equals("Reader") && f.isFile() && f.canRead() && Reader.isAvailable(path)) {
+                    return true;
+                }
+                if (type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()) && Writer.isAvailable(path))
+                    return true;
+            }
+            return false;
+        } catch (IOException e) {
+            print("File Error");
+            log.warn("Error in opening the file -- {}", path);
+            return false;
+        }
+    }
+
     private int filePathInput(FileConfig fileConfig, String type) {
         String path = "";
         if (type.equals("Reader")) {
-            System.out.println("Supported readers are : " + Reader.getAvailableReaders());
+            print("Supported readers are : " + Reader.getAvailableReaders());
         } else {
-            System.out.println("Supported writers are : " + Writer.getAvailableWriters());
+            print("Supported writers are : " + Writer.getAvailableWriters());
         }
-        System.out.println("Enter the file Path: ");
+        print("Enter the file Path: ");
         int next = 1;
         while (true) {
             try {
@@ -131,36 +210,21 @@ public class ConsoleInterface extends UserInterface {
                     next = -1;
                     path = path.substring(0, path.length() - 1);
                 }
-                File f = new File(path);
-                String dir = path.substring(0, path.lastIndexOf("/") + 1);
-                File directory = new File(dir);
-                if (directory.isDirectory()) {
-                    if (type.equals("Writer")) {
-                        if (path.contains(".") && Writer.isAvailable(path)) {
-                            if (f.createNewFile()) {
-                                fileConfig.setFilePath(path);
-                                setFileType(fileConfig);
-                                break;
-                            }
-                        }
-                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path)) {
-                        fileConfig.setFilePath(path);
-                        setFileType(fileConfig);
-                        break;
-                    }
+                boolean verified = verifyFilePath(path,type);
+                if(verified) {
+                    fileConfig.setFilePath(path);
+                    setFileType(fileConfig);
+                    break;
                 }
             } catch (NoSuchElementException e) {
-                System.out.println("No path entered" + e.getMessage());
+                print("No path entered" + e.getMessage());
 
             } catch (IllegalStateException e) {
-                System.out.println("Scanner closed");
+                print("Scanner closed");
                 log.error("Scanner closed");
                 return -1;
-            } catch (IOException e) {
-                System.out.println("File Error");
-                log.warn("Error in opening the file -- {}", path);
             }
-            System.out.println("Enter proper file path: ");
+            print("Enter proper file path: ");
         }
         fileSpecificConfig(fileConfig);
         return next;
