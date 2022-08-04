@@ -1,10 +1,13 @@
 package com.striim.BasicFileAdapters.reader;
 
+import com.striim.BasicFileAdapters.converter.FileConfig;
 import com.striim.BasicFileAdapters.database.DataRecord;
 import lombok.extern.slf4j.XSlf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,7 +18,8 @@ import java.util.stream.Collectors;
 
 @XSlf4j(topic = "General")
 @Component("JSONREADER")
-public class JsonReader extends Reader{
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class JsonReader extends Reader {
 
     private JSONArray jsonArray;
 
@@ -35,16 +39,25 @@ public class JsonReader extends Reader{
         }
     }
 
+    @Override
+    protected boolean prepareReader(FileConfig fileConfig) {
+        if(super.prepareReader(fileConfig))
+            return true;
+
+        JSONTokener tokener = new JSONTokener(fileReader);
+        JSONObject jsonObject = new JSONObject(tokener);
+        String key = jsonObject.keySet().stream()
+                .filter(e->e.contains("Data")||e.contains("data")).collect(Collectors.toList()).get(0);
+
+        jsonArray = jsonObject.getJSONArray(key);
+
+        return true;
+    }
 
     @Override
     protected boolean prepareHeaders() {
         try {
-            JSONTokener tokener = new JSONTokener(fileReader);
-            JSONObject jsonObject = new JSONObject(tokener);
-            String key = jsonObject.keySet().stream()
-                    .filter(e->e.contains("Data")||e.contains("data")).collect(Collectors.toList()).get(0);
 
-            jsonArray = jsonObject.getJSONArray(key);
             JSONObject header = (JSONObject) jsonArray.get(0);
 
             if(header.keySet().size() < 1){

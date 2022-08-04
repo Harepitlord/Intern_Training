@@ -21,8 +21,7 @@ public abstract class Writer {
     protected FileWriter fileWriter;
     protected String state;
     protected @Getter @Setter UserInterface userInterface;
-    protected @Getter
-    @Setter FileConfig fileConfig;
+    protected @Getter @Setter FileConfig fileConfig;
 
     private static final ArrayList<String> availableWriters;
 
@@ -40,10 +39,10 @@ public abstract class Writer {
             File file = new File(fileConfig.getFilePath());
             fileWriter = new FileWriter(file, true);
             state = "File Connected";
-            return true;
+            return false;
         } catch (IOException ex) {
             state = "File Not Found";
-            return false;
+            return true;
         }
     }
 
@@ -76,6 +75,6 @@ public abstract class Writer {
         return fileConfig.getFetchColumns();
     }
 
-    public abstract void writeFile(Writer writer, StorageSpace database, ExecutorService executorService);
+    public abstract void writeFile(StorageSpace database, ExecutorService executorService);
 
 }

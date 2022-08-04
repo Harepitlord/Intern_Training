@@ -94,7 +94,7 @@ public class Converter {
             writer.setFileConfig(w);
             writer.setUserInterface(userInterface);
             if (addWriter(writer))
-                writer.writeFile(writer, storage, executorService);
+                writer.writeFile(storage, executorService);
         });
 
     }

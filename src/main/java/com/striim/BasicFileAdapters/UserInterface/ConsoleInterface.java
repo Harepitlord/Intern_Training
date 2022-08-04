@@ -108,6 +108,28 @@ public class ConsoleInterface extends UserInterface {
         }
     }
 
+    private boolean verifyFilePath(String path, String type) {
+        if (path == null)
+            return false;
+        try {
+            File f = new File(path);
+            String dir = path.substring(0, path.lastIndexOf("/") + 1);
+            File directory = new File(dir);
+            if (directory.isDirectory()) {
+                if (type.equals("Reader") && f.isFile() && f.canRead() && Reader.isAvailable(path)) {
+                    return true;
+                }
+                if (type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()) && Writer.isAvailable(path))
+                    return true;
+            }
+            return false;
+        } catch (IOException e) {
+            print("File Error");
+            log.warn("Error in opening the file -- {}", path);
+            return false;
+        }
+    }
+
     private int filePathInput(FileConfig fileConfig, String type) {
         String path = "";
         if (type.equals("Reader")) {
@@ -130,23 +152,11 @@ public class ConsoleInterface extends UserInterface {
                     next = -1;
                     path = path.substring(0, path.length() - 1);
                 }
-                File f = new File(path);
-                String dir = path.substring(0, path.lastIndexOf("/") + 1);
-                File directory = new File(dir);
-                if (directory.isDirectory()) {
-                    if (type.equals("Writer")) {
-                        if (path.contains(".") && Writer.isAvailable(path)) {
-                            if ((f.isFile() && f.canWrite()) || f.createNewFile()) {
-                                fileConfig.setFilePath(path);
-                                setFileType(fileConfig);
-                                break;
-                            }
-                        }
-                    } else if (type.equals("Reader") && f.isFile() && Reader.isAvailable(path) && f.canRead()) {
-                        fileConfig.setFilePath(path);
-                        setFileType(fileConfig);
-                        break;
-                    }
+                boolean verified = verifyFilePath(path,type);
+                if(verified) {
+                    fileConfig.setFilePath(path);
+                    setFileType(fileConfig);
+                    break;
                 }
             } catch (NoSuchElementException e) {
                 print("No path entered" + e.getMessage());
@@ -155,9 +165,6 @@ public class ConsoleInterface extends UserInterface {
                 print("Scanner closed");
                 log.error("Scanner closed");
                 return -1;
-            } catch (IOException e) {
-                print("File Error");
-                log.warn("Error in opening the file -- {}", path);
             }
             print("Enter proper file path: ");
         }

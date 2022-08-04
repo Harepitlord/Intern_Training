@@ -37,4 +37,12 @@ public class DataRecord {
         }
         return recordObj;
     }
+
+    public ArrayList<String> getHeader() {
+        return new ArrayList<>(records.keySet());
+    }
+
+    public ArrayList<String> getData() {
+        return new ArrayList<>(records.values());
+    }
 }

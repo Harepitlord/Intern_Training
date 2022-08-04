@@ -12,8 +12,8 @@
     </Readers>
     <Writers>
         <Writer>
-            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleOutput/xml_o1.json
-            </FilePath>
+            <FilePath>/Users/hareeswaran/Java_Projects/Intern_Training/src/main/java/com/striim/SampleOutput/csv_o1.csv</FilePath>
+            <Delimiter>,</Delimiter>
             <Queries>
                 <Query>age > 45</Query>
             </Queries>
