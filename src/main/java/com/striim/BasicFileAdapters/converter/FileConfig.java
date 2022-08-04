@@ -9,16 +9,12 @@ import java.util.function.Predicate;
 
 public class FileConfig {
 
-    private @Getter
-    @Setter String filePath;
-    private @Getter
-    @Setter String fileType;
-    private @Getter
-    @Setter String delimiter;
+    private @Getter @Setter String filePath;
+    private @Getter @Setter String fileType;
+    private @Getter @Setter String delimiter;
     private @Getter String type;
     private @Getter Predicate<DataRecord> query;
-    private @Getter
-    @Setter ArrayList<String> fetchColumns;
+    private @Getter @Setter ArrayList<String> fetchColumns;
 
     public void setType(String type) {
         this.type = type.toUpperCase();

@@ -116,11 +116,10 @@ public class ConsoleInterface extends UserInterface {
             String dir = path.substring(0, path.lastIndexOf("/") + 1);
             File directory = new File(dir);
             if (directory.isDirectory()) {
-                if (type.equals("Reader") && f.isFile() && f.canRead() && Reader.isAvailable(path)) {
+                if (type.equals("Reader") && (f.isFile() && f.canRead()) && Reader.isAvailable(path)) {
                     return true;
                 }
-                if (type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()) && Writer.isAvailable(path))
-                    return true;
+                return type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()) && Writer.isAvailable(path);
             }
             return false;
         } catch (IOException e) {
@@ -131,7 +130,7 @@ public class ConsoleInterface extends UserInterface {
     }
 
     private int filePathInput(FileConfig fileConfig, String type) {
-        String path = "";
+        String path;
         if (type.equals("Reader")) {
             print("Supported readers are : " + Reader.getAvailableReaders());
         } else {

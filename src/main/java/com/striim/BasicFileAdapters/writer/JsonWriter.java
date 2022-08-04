@@ -57,7 +57,7 @@ public class JsonWriter extends Writer {
         });
     }
 
-    JSONArray toJson(ArrayList<DataRecord> toWriteResultSet){
+    private JSONArray toJson(ArrayList<DataRecord> toWriteResultSet){
         JSONArray arrayObj=new JSONArray();
         for (DataRecord dataRecord : toWriteResultSet) {
             JSONObject jsonObj = new JSONObject(dataRecord.getRecords());

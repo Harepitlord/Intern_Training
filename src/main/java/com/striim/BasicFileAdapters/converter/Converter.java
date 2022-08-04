@@ -46,7 +46,7 @@ public class Converter {
         addReaders();
         log.info("No. of Readers added : {}", readers.size());
 
-        readFiles(executorService);
+        readFiles();
 
         writers();
         log.info("No. of Writers added : {}", writers.size());
@@ -58,7 +58,7 @@ public class Converter {
 
     }
 
-    public void addReader(Reader reader) {
+    private void addReader(Reader reader) {
         if (readers.stream().noneMatch(e -> e.getFilePath().equals(reader.getFilePath()))) {
             readers.add(reader);
 
@@ -66,7 +66,7 @@ public class Converter {
         }
     }
 
-    public boolean addWriter(Writer writer) {
+    private boolean addWriter(Writer writer) {
         if (writers.stream().noneMatch(e -> e.getFilePath().equals(writer.getFilePath()))) {
             writers.add(writer);
 
@@ -77,7 +77,7 @@ public class Converter {
         return false;
     }
 
-    public void addReaders() {
+    private void addReaders() {
         ArrayList<FileConfig> readersFileConfigs=userInterface.getReaderFileConfigs();
         readersFileConfigs.forEach(r -> {
             Reader reader = (Reader) context.getBean(r.getType());
@@ -86,7 +86,7 @@ public class Converter {
         });
     }
 
-    public void writers() {
+    private void writers() {
         ArrayList<FileConfig> writersFileConfigs = userInterface.getWriterFileConfigs();
 
         writersFileConfigs.forEach(w -> {
@@ -99,7 +99,7 @@ public class Converter {
 
     }
 
-    public void readFiles(ExecutorService executorService) {
+    private void readFiles() {
         List<Future<?>> futures = readers.stream().map(e-> executorService.submit(() -> storage.addDataObjects(e.readFile()))).collect(Collectors.toList());
         boolean loop = true;
         long start = System.nanoTime();
