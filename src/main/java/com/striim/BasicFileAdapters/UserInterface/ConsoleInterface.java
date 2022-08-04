@@ -108,25 +108,25 @@ public class ConsoleInterface extends UserInterface {
         }
     }
 
-    private String verifyFilePath(String path, String type) {
+    private boolean verifyFilePath(String path, String type) {
         if (path == null)
-            return null;
+            return false;
         try {
             File f = new File(path);
             String dir = path.substring(0, path.lastIndexOf("/") + 1);
             File directory = new File(dir);
             if (directory.isDirectory()) {
-                if (type.equals("Reader") && f.isFile() && f.canRead()) {
-                    return path;
+                if (type.equals("Reader") && f.isFile() && f.canRead() && Reader.isAvailable(path)) {
+                    return true;
                 }
-                if (type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()))
-                    return path;
+                if (type.equals("Writer") && ((f.isFile() && f.canWrite()) || f.createNewFile()) && Writer.isAvailable(path))
+                    return true;
             }
-            return null;
+            return false;
         } catch (IOException e) {
             print("File Error");
             log.warn("Error in opening the file -- {}", path);
-            return null;
+            return false;
         }
     }
 
@@ -152,18 +152,12 @@ public class ConsoleInterface extends UserInterface {
                     next = -1;
                     path = path.substring(0, path.length() - 1);
                 }
-                path = verifyFilePath(path,type);
-                if(path != null && type.equals("Writer") && Writer.isAvailable(path)) {
+                boolean verified = verifyFilePath(path,type);
+                if(verified) {
                     fileConfig.setFilePath(path);
                     setFileType(fileConfig);
                     break;
                 }
-                else if (path != null && type.equals("Reader")  && Reader.isAvailable(path)) {
-                        fileConfig.setFilePath(path);
-                        setFileType(fileConfig);
-                        break;
-                }
-
             } catch (NoSuchElementException e) {
                 print("No path entered" + e.getMessage());
 
