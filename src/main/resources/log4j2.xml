@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="FILE_LOG_PATTERN">
+            %d %p %C{1.} [%t] %m%n
+        </Property>
+        <Property name="CONSOLE_LOG_PATTERN">
+            %style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}]
+            %style{%C{3.}}{bright,yellow}:%logger %msg%n%throwable
+        </Property>
+        <Property name="LOG_DIR">
+            com/striim/BasicFileAdapters/Logs
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleApp" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
+        </Console>
+        <RollingFile name="RollingFileApp" fileName="${LOG_DIR}/Log.log" filePattern="${LOG_DIR}/log_%i.log">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 KB"/>
+            </Policies>
+        </RollingFile>
+        >
+    </Appenders>
+    <Loggers>
+        <Root level="Warn">
+            <AppenderRef ref="ConsoleApp"/>
+        </Root>
+        <Logger name="general" level="INFO" additivity="false">
+            <AppenderRef ref="RollingFileApp"/>
+<!--            <AppenderRef ref="ConsoleApp"/>-->
+        </Logger>
+    </Loggers>
+</Configuration>

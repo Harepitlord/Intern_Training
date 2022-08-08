@@ -1,0 +1,16 @@
+filePathInput,fileType,expected
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.csv,Reader,true
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.xml,Reader,false
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/bank1.xml,Writer,false
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/,Reader,false
+/Users/aathithyamj/IdeaProjects/CsvToJson/src/main/java/com/striim/SampleData/,Writer,false
+fhgjhkh,Reader,false
+fhgjhkh,Writer,false
+4576766,Reader,false
+4576766,Writer,false
+/dfghj/asdf/ertyui.csv,Reader,false
+/dfghj/asdf/ertyui.csv,Writer,false
+/dfghj/asdf/bank1.csv,Reader,false
+/dfghj/asdf/bank1.csv,Writer,false
+bank1.csv,Reader,false
+bank1.csv,Writer,false

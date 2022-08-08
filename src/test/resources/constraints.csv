@@ -1,0 +1,11 @@
+constraint,expected
+age > 45,true
+age> 45,false
+age >45,false
+age>45,false
+age != 45,false
+age == 45,false
+age 5347 45,false
+age dgfj 45,false
+gfsj > 45,false
+agfs == 45,false
